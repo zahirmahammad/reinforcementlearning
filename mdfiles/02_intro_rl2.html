@@ -1,0 +1,169 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How do we Solve RL Problems &mdash; RLDocs 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Value-Based Methods" href="03_value_based.html" />
+    <link rel="prev" title="Reinforcement Learning" href="01_intro_rl1.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            RLDocs
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01_intro_rl1.html">Reinforcement Learning</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How do we Solve RL Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_value_based.html">Value-Based Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_policy_based.html">Policy-Based Methods</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Value-Based</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="05_QLearning.html">Q Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_DQN.html">DQN</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">RLDocs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">How do we Solve RL Problems</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/mdfiles/02_intro_rl2.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="how-do-we-solve-rl-problems">
+<h1>How do we Solve RL Problems<a class="headerlink" href="#how-do-we-solve-rl-problems" title="Link to this heading"></a></h1>
+<p>Two main approaches to solve</p>
+<ol class="arabic simple">
+<li><p>Value-Based</p>
+<ul class="simple">
+<li><p>Indirectly teach the agent to learn “which state is more valuable” and then take the action that leads to that state</p></li>
+</ul>
+</li>
+<li><p>Policy-Based</p>
+<ul class="simple">
+<li><p>Directly, by teaching the agent to learn which action to take given current state</p></li>
+</ul>
+</li>
+</ol>
+<section id="value-based">
+<h2>1. Value-Based<a class="headerlink" href="#value-based" title="Link to this heading"></a></h2>
+<ul>
+<li><p>We learn a value function that maps a state to expected value of being at that state</p></li>
+<li><p>Value of State = expected discounted return the agent can get if it starts in that state and then acts according to the policy</p></li>
+<li><p>According to policy = going to state with highest value</p>
+<p><span class="math notranslate nohighlight">\(V_{\pi}(s) = E_{\pi}[R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ...... | S_t = S]\)</span></p>
+</li>
+<li><p>Value function basically “give value to each state”</p>
+<p>{Think of a 4x4 grid and each checkbox has a value}</p>
+</li>
+<li><p>With this value function at each step, our policy will select the state with highest value</p></li>
+</ul>
+</section>
+<section id="policy-based">
+<h2>2. Policy-Based<a class="headerlink" href="#policy-based" title="Link to this heading"></a></h2>
+<ul>
+<li><p>Learn the policy function directly <span class="math notranslate nohighlight">\(\pi^*\)</span></p></li>
+<li><p>Function defines a mapping from “state” to “best action to that”. Alternatively, it defines a “probability distributions” over set of possible actions to that state.</p></li>
+<li><p>Two types of policies</p>
+<ol class="arabic">
+<li><p>Deterministic - Policy always returns the same action</p>
+<p><span class="math notranslate nohighlight">\(a=\pi(s)\)</span></p>
+</li>
+<li><p>Stochastic - Outputs a probability distributions over actions</p>
+<p><span class="math notranslate nohighlight">\(\pi(a|s) = P[A|S]\)</span></p>
+</li>
+</ol>
+</li>
+</ul>
+<p>The Deep in RL - is nothing but usage of Deep NN</p>
+<p>Value-Based Algos</p>
+<ol class="arabic simple">
+<li><p>Q-Learning - QTable</p></li>
+<li><p>Deep Q-Learning - A NN to predict</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="01_intro_rl1.html" class="btn btn-neutral float-left" title="Reinforcement Learning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="03_value_based.html" class="btn btn-neutral float-right" title="Value-Based Methods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Zahiruddin Mahammad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

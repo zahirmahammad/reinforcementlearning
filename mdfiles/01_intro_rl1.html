@@ -1,0 +1,199 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reinforcement Learning &mdash; RLDocs 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="How do we Solve RL Problems" href="02_intro_rl2.html" />
+    <link rel="prev" title="Reinforcement Learning documentation" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            RLDocs
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reinforcement Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_intro_rl2.html">How do we Solve RL Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_value_based.html">Value-Based Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_policy_based.html">Policy-Based Methods</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Value-Based</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="05_QLearning.html">Q Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_DQN.html">DQN</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">RLDocs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Reinforcement Learning</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/mdfiles/01_intro_rl1.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="reinforcement-learning">
+<h1>Reinforcement Learning<a class="headerlink" href="#reinforcement-learning" title="Link to this heading"></a></h1>
+<p><strong>Definition</strong></p>
+<p>Reinforcement Learning is kind of machine learning but without any datasets. It’s learning based on try, fail through experience.</p>
+<p>We build an agent that makes smart decision by interacting with the environment</p>
+<p>Agent decision-making is called the policy
+“<span class="math notranslate nohighlight">\(\pi\)</span>”</p>
+<p>Technically it is said that - “RL is based on ‘Reward Hypothesis’”</p>
+<section id="basic-terminologies">
+<h2>Basic Terminologies<a class="headerlink" href="#basic-terminologies" title="Link to this heading"></a></h2>
+<p>Here are the basic terms before diving into RL, later we’ll discuss about the other terms that people doing RL use</p>
+<ul class="simple">
+<li><p>Agent</p></li>
+<li><p>Markov Property</p></li>
+<li><p>Observation Space Vs State</p></li>
+<li><p>Action Space</p></li>
+<li><p>Rewards and Discounting</p></li>
+<li><p>Exploration Vs Exploitation</p></li>
+<li><p>Types of tasks</p>
+<ul>
+<li><p>Episodic</p></li>
+<li><p>Continuing</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="agent">
+<h2>1. Agent<a class="headerlink" href="#agent" title="Link to this heading"></a></h2>
+<p>Agent is the robot or policy or the thing that wants to learn something.</p>
+<p>The agent needs to acheive a specific goal, we define the problem as a maximization problem. The agent needs to get the maximum reward that is possible in the episode.</p>
+</section>
+<section id="markov-property">
+<h2>2. Markov Property<a class="headerlink" href="#markov-property" title="Link to this heading"></a></h2>
+<p>It says that our agent needs only the current state to decide what action to take and not the history of states and actions that took before.</p>
+</section>
+<section id="observation-space-vs-state-space">
+<h2>3. Observation Space Vs State Space<a class="headerlink" href="#observation-space-vs-state-space" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>State - Complete description of state of the world (chess game {you have access to the entire world})</p></li>
+<li><p>Obs - A partial description of state (Super mario game)</p></li>
+</ul>
+</section>
+<section id="action-space">
+<h2>4. Action Space<a class="headerlink" href="#action-space" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Discrete Action Space: finite number of actions</p></li>
+<li><p>Continuous Action Space: infinite number of actions</p></li>
+</ul>
+<p>This will have importance in choosing the RL Algorithm</p>
+</section>
+<section id="rewards-and-discounting">
+<h2>5. Rewards and Discounting<a class="headerlink" href="#rewards-and-discounting" title="Link to this heading"></a></h2>
+<p>The cummulative reward can be written as</p>
+<p><span class="math notranslate nohighlight">\(R_{T} = r_{t+1} + r_{t+2} + r_{t+3} + .....\)</span></p>
+<p><span class="math notranslate nohighlight">\(R_{T} = \sum_{k=0}r_{t+k+1}\)</span></p>
+<p>sum of all rewards in future</p>
+<p>Disounting - means “discount for future rewards”</p>
+<p>Discount Factor <span class="math notranslate nohighlight">\((\gamma)\)</span> - “How much fraction of future rewards to consider”</p>
+<p><span class="math notranslate nohighlight">\(R_{T} = r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + \gamma^3 r_{t+4} + .....\)</span></p>
+<p><span class="math notranslate nohighlight">\(R_{T} = \sum_{k=0} \gamma^k r_{t+k+1}\)</span></p>
+<ul class="simple">
+<li><p>If there is no “discount factor <span class="math notranslate nohighlight">\(\gamma\)</span>” all rewards would be summed and there is no focus on global goal. It just cares about what now.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\gamma \in [0.95, 0.99]\)</span> not 1 (no point of being 1.0)</p></li>
+<li><p>larger <span class="math notranslate nohighlight">\(\gamma\)</span> is less disount on future rewards - so cares more about long term reward</p></li>
+<li><p>smaller <span class="math notranslate nohighlight">\(\gamma\)</span> is more discount on future rewards - so cares less about long term reward</p></li>
+</ul>
+</section>
+<section id="exploration-vs-exploitation">
+<h2>6. Exploration Vs Exploitation<a class="headerlink" href="#exploration-vs-exploitation" title="Link to this heading"></a></h2>
+<p>Agent need a balance between expolaration and exploitation. We use the term <span class="math notranslate nohighlight">\(\epsilon\)</span> ; <span class="math notranslate nohighlight">\(\epsilon \in (0, 1)\)</span></p>
+<ul class="simple">
+<li><p>With probability of <span class="math notranslate nohighlight">\(\epsilon\)</span>, choose explore</p></li>
+<li><p>With probablity of <span class="math notranslate nohighlight">\(1 - \epsilon\)</span>, choose exploit</p></li>
+</ul>
+</section>
+<section id="types-of-tasks">
+<h2>7. Types of <strong>Tasks</strong><a class="headerlink" href="#types-of-tasks" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Episodic - has START and TERMINAL state (eg: super mario)</p></li>
+<li><p>Conitinuing - no TERMINAL state, continuous forever (eg: stocks, driving)</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Reinforcement Learning documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="02_intro_rl2.html" class="btn btn-neutral float-right" title="How do we Solve RL Problems" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Zahiruddin Mahammad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

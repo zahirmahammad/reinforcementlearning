@@ -1,0 +1,208 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Value-Based Methods &mdash; RLDocs 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Policy-Based Methods" href="04_policy_based.html" />
+    <link rel="prev" title="How do we Solve RL Problems" href="02_intro_rl2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            RLDocs
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01_intro_rl1.html">Reinforcement Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_intro_rl2.html">How do we Solve RL Problems</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Value-Based Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_policy_based.html">Policy-Based Methods</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Value-Based</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="05_QLearning.html">Q Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_DQN.html">DQN</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">RLDocs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Value-Based Methods</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/mdfiles/03_value_based.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="value-based-methods">
+<h1>Value-Based Methods<a class="headerlink" href="#value-based-methods" title="Link to this heading"></a></h1>
+<p>Deep Q-Learning</p>
+<p>First Deep RL Algorithm that played Atari games and beat the human level</p>
+<p>Two types of Value-based methods</p>
+<p>In value-based, we learn a “value function” that maps a state to a expected value of being at that state (expected return)</p>
+<p>“Value of state” = Expected Discounted Return, that agent gets if it “starts and acts according to policy”</p>
+<p>But we don’t have a policy in value-based, we train value-function not policy</p>
+<p>Policy-Based</p>
+<ol class="arabic simple">
+<li><p>Deterministic - Returns one action given a state</p></li>
+<li><p>Stochastic - Returns a probability distributions over actions</p></li>
+</ol>
+<p>Value-Based</p>
+<p>Indirectly, by training a value function, Given this value function, our policy will take an action</p>
+<ul class="simple">
+<li><p>Policy is not trained/learned, we need to specify its behavior</p></li>
+<li><p>Greedy Policy - Given, the value function, will take actions that always leads to biggest rewards</p></li>
+</ul>
+<p>In value-based</p>
+<ul class="simple">
+<li><p>Don’t train a policy</p></li>
+<li><p>Our policy function is defined by hand</p></li>
+<li><p>Instead train a value function that is a Neural Network</p></li>
+</ul>
+<p>In every method, there is a policy, but in value-based you don’t train policy, {but it’s a pre-specified function}</p>
+<p><span class="math notranslate nohighlight">\(\pi^*(s) = argmax_a Q^*(s, a)\)</span></p>
+<p>Infact, most value-based use “Epsilon-Greedy” Policy</p>
+<p>Two types of value-based functions</p>
+<ol class="arabic">
+<li><p>State-Value function
+<span class="math notranslate nohighlight">\(V_\pi (s) = E_\pi[G_t | S_t = s]\)</span></p>
+<p>For each state, the state-value function outputs the expected return if the agents starts at that state</p>
+</li>
+<li><p>Action-Value function</p>
+<p>In action-value function, for each state-action pair, the action-value function outputs the expected return if agent starts in that state, takes that action, &amp; follows policy ever after</p>
+<p><span class="math notranslate nohighlight">\(Q_\pi(s, a) = E_\pi[G_t | S_t=s, A_t=a]\)</span></p>
+</li>
+</ol>
+<p>Difference</p>
+<ul class="simple">
+<li><p>For state-value function, we calculate the value of state <span class="math notranslate nohighlight">\(S_t\)</span></p></li>
+<li><p>For action-value function, we calculate, the value of state-action pair <span class="math notranslate nohighlight">\((S_t, A_t)\)</span> hence the value of taking that action at that state</p></li>
+</ul>
+<p>— Add picture —–</p>
+<section id="bellmann-equation">
+<h2>Bellmann Equation<a class="headerlink" href="#bellmann-equation" title="Link to this heading"></a></h2>
+<p>It simplifies our state-value or action-value function</p>
+<p><span class="math notranslate nohighlight">\(V_\pi(s) = E_\pi[R_{t+1} + \gamma V_\pi(S_{t+1}) | S_t = s]\)</span></p>
+<p>The idea of Bellmann equation is that instead of calculating each value as the sum of expected return, we calculate the value as sum of immediate reward + discounted value of state that follows</p>
+</section>
+<section id="monte-carlo-vs-temporal-difference-learning">
+<h2>Monte Carlo Vs Temporal Difference Learning<a class="headerlink" href="#monte-carlo-vs-temporal-difference-learning" title="Link to this heading"></a></h2>
+<p>2 Learning Strategies for training value function or policy function</p>
+<ul class="simple">
+<li><p>Monte Carlo - uses an entire episode of experience before learning</p></li>
+<li><p>Temporal Difference - uses only a step <span class="math notranslate nohighlight">\((S_t, A_t, R_{t+1}, S_{t+1})\)</span> to learn</p></li>
+</ul>
+</section>
+<section id="monte-carlo">
+<h2>Monte Carlo<a class="headerlink" href="#monte-carlo" title="Link to this heading"></a></h2>
+<p>Waits until the end of episode, calculate <span class="math notranslate nohighlight">\(G_t\)</span>(return) and uses it as a target for updating <span class="math notranslate nohighlight">\(V(s_t)\)</span></p>
+<p><span class="math notranslate nohighlight">\(V(S_t) \leftarrow V(S_t) + \alpha[G_t - V(S_t)]\)</span></p>
+<ul class="simple">
+<li><p>Given an example of start and enf point in a grid MC waits until episode ends and gets the list of “State, Action, Reward, Next State”</p></li>
+</ul>
+<p>[[State, <span class="math notranslate nohighlight">\(A_t\)</span>, <span class="math notranslate nohighlight">\(R_{t+1}\)</span>, <span class="math notranslate nohighlight">\(S_{t+1}\)</span>], [<span class="math notranslate nohighlight">\(S_{t+1}\)</span>, <span class="math notranslate nohighlight">\(A_{t+1}\)</span>, <span class="math notranslate nohighlight">\(R_{t+2}\)</span>, <span class="math notranslate nohighlight">\(S_{t+2}\)</span>], ……]</p>
+<ul class="simple">
+<li><p>Agent will sum all rewards to get “<span class="math notranslate nohighlight">\(G_t\)</span>” &amp; updates <span class="math notranslate nohighlight">\(V(S_t)\)</span></p></li>
+</ul>
+</section>
+<section id="temporal-difference">
+<h2>Temporal Difference<a class="headerlink" href="#temporal-difference" title="Link to this heading"></a></h2>
+<p>TD, waits for one interaction (<span class="math notranslate nohighlight">\(S_{t+1}\)</span>) to form a TD target and update <span class="math notranslate nohighlight">\(V(S_t)\)</span> using <span class="math notranslate nohighlight">\(R_{t+1}\)</span> and <span class="math notranslate nohighlight">\(\gamma * V(S_{t+1})\)</span></p>
+<ul class="simple">
+<li><p>Since, we don’t have <span class="math notranslate nohighlight">\(G_t\)</span>, we use <span class="math notranslate nohighlight">\(R_{t+1}\)</span> and discounted value of next state</p></li>
+<li><p>This is called “Bootstrapping”, becuase TD bases its update in part on an existing estimate V(S_{t+1})</p></li>
+</ul>
+<p><span class="math notranslate nohighlight">\(V(S_t) \leftarrow V(S_t) + \alpha(R_t + \gamma V(S_{t+1}) - V(S_t))\)</span></p>
+<p>This method is called TD(0) or one-step TD</p>
+<p>Simple Difference</p>
+<ul>
+<li><p>MC -  We update value function from complete episode {actual accurate discounted return of episode}</p>
+<p><span class="math notranslate nohighlight">\(G_t = \sum_{k=0}^\infty R_{t+k+1}\)</span></p>
+</li>
+<li><p>TD - We update value function from a step, we replace “G_t” with an estimated return called “TD target”</p>
+<p>TD target = <span class="math notranslate nohighlight">\(R_{t+1} + \gamma V(S_{t+1})\)</span></p>
+<p>Bellmann = <span class="math notranslate nohighlight">\(E_\pi[R_{t+1} + \gamma V(S_{t+1})|S_t = s]\)</span></p>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="02_intro_rl2.html" class="btn btn-neutral float-left" title="How do we Solve RL Problems" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="04_policy_based.html" class="btn btn-neutral float-right" title="Policy-Based Methods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Zahiruddin Mahammad.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
