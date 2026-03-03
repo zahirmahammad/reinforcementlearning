@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Monte Carlo Reinforce &mdash; RLDocs 0.1 documentation</title>
+  <title>Monte Carlo Reinforce (Policy-Gradient) &mdash; RLDocs 0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
@@ -16,9 +16,12 @@
       <script src="../_static/documentation_options.js?v=2709fde1"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="DQN" href="06_DQN.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -52,6 +55,10 @@
 <li class="toctree-l1"><a class="reference internal" href="05_QLearning.html">Q Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06_DQN.html">DQN</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Policy-Based</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Monte Carlo Reinforce (Policy-Gradient)</a></li>
+</ul>
 
         </div>
       </div>
@@ -67,7 +74,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Monte Carlo Reinforce</li>
+      <li class="breadcrumb-item active">Monte Carlo Reinforce (Policy-Gradient)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/mdfiles/07_reinforce.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -77,14 +84,39 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section class="tex2jax_ignore mathjax_ignore" id="monte-carlo-reinforce">
-<h1>Monte Carlo Reinforce<a class="headerlink" href="#monte-carlo-reinforce" title="Link to this heading"></a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="monte-carlo-reinforce-policy-gradient">
+<h1>Monte Carlo Reinforce (Policy-Gradient)<a class="headerlink" href="#monte-carlo-reinforce-policy-gradient" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p>We have a parametrized stochastic policy</p></li>
+<li><p>We have a probability distribution over action. The probability of taking each action is also called action preference.</p></li>
+</ul>
+<p>The idea</p>
+<ul class="simple">
+<li><p>We let the agent interact during an episode. If we win the episode, we consider each action taking was good and must be more sampled.</p></li>
+</ul>
+<p>Algorithm</p>
+<ul class="simple">
+<li><p>Training loop</p>
+<ul>
+<li><p>Collect episode with <span class="math notranslate nohighlight">\(\pi\)</span></p></li>
+<li><p>Calculate return for each action</p></li>
+<li><p>Update weights to <span class="math notranslate nohighlight">\(\pi\)</span></p>
+<ul>
+<li><p>if positive return <span class="math notranslate nohighlight">\(\rightarrow\)</span> increase every <span class="math notranslate nohighlight">\(P(S, a)\)</span> pair taken in that episode</p></li>
+<li><p>if negative return <span class="math notranslate nohighlight">\(\rightarrow\)</span> decrease every <span class="math notranslate nohighlight">\(P(S, a)\)</span> pair taken in that episode</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="06_DQN.html" class="btn btn-neutral float-left" title="DQN" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 

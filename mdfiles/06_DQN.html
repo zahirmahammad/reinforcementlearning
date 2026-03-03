@@ -21,6 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Monte Carlo Reinforce (Policy-Gradient)" href="07_reinforce.html" />
     <link rel="prev" title="Q Learning" href="05_QLearning.html" /> 
 </head>
 
@@ -54,6 +55,10 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="05_QLearning.html">Q Learning</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">DQN</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Policy-Based</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="07_reinforce.html">Monte Carlo Reinforce (Policy-Gradient)</a></li>
 </ul>
 
         </div>
@@ -116,11 +121,56 @@
 </li>
 <li><p>DQL has 2 phases</p>
 <ul>
-<li><p>Sampling</p></li>
-<li><p>Training</p></li>
+<li><p>Sampling - We perform actions and store experience tuples in replay memory</p></li>
+<li><p>Training - Select a small batch of tuples randomly and learn from this batch using gradient descent update</p></li>
 </ul>
 </li>
+<li><p>DQL training might suffer from instability, mainly because of combining a non-linear Q-value function(nueral net) and bootstrapping (when we update targets with existinf estimated not actual return)</p></li>
+<li><p>To stabilize, we implement 3 solutions</p>
+<ol class="arabic simple">
+<li><p>Experience replay to make more efficient use of experience</p></li>
+<li><p>Fixed Q-target to stabilize the training</p></li>
+<li><p>Double DQL, to handle the problem of overestimation of Q-values</p></li>
+</ol>
+</li>
 </ul>
+</section>
+<section id="why-replay-memory">
+<h2>1. Why replay memory?<a class="headerlink" href="#why-replay-memory" title="Link to this heading"></a></h2>
+<ul>
+<li><p>Usually in online RL, the agent interacts with the env, gets experiences, learns from them and discards and is not efficient.</p>
+<p>Experience replay helps by using the experiences of training more efficiently. We use replay buffer that saves experience samples</p>
+</li>
+<li><p>Avoid forgetting previous experiences and reduce correlation between experiences (catastrophic forgetting)</p>
+<p>We initialize a replay memory buffer ‘D’ with capacity N.</p>
+</li>
+</ul>
+</section>
+<section id="fixed-q-target">
+<h2>2. Fixed Q-Target<a class="headerlink" href="#fixed-q-target" title="Link to this heading"></a></h2>
+<ul>
+<li><p>In the TD error, we calculate difference between TD-target (Q-target) and current Q-value (estimation of Q)</p>
+<p>But we don’t know real TD target. To avoid oscillations while training in the initial it is just garbage values. We use 2 seperate networks and update (copy) the parameters from DQN to target network every “c” steps</p>
+</li>
+</ul>
+</section>
+<section id="double-dqn">
+<h2>3. Double DQN<a class="headerlink" href="#double-dqn" title="Link to this heading"></a></h2>
+<ul>
+<li><p>The problem of overestimation of values</p>
+<div class="math notranslate nohighlight">
+\[V(S_t) \leftarrow V(S_t) + \alpha[R_{t+1}+\gamma V(S_{t+1}) - V(S_t)]\]</div>
+</li>
+<li><p>Simple Ques: How are we sure about best action for next state has the highest Q-value in “Neural Net”. Since the accuracy of Q-values depends on what action we tried and states we explored.</p></li>
+<li><p>In the initial since Q-values are noisy, the best action can lead to false positives. If non-optimal are give priority, then there is no point.</p></li>
+</ul>
+<p>For solution, we use</p>
+<ol class="arabic simple">
+<li><p>Q-Network: to select best action for next state (highest Q-Value)</p></li>
+<li><p>Target Network: to calculate the target Q-value of that action at next state (estimation)</p></li>
+</ol>
+<p>Normal DQN  <span class="math notranslate nohighlight">\( \implies y = r + \gamma Q_{target}(S, a)\)</span></p>
+<p>Double DQN <span class="math notranslate nohighlight">\(\implies y = r + \gamma Q_{target}(S, argmax_a Q_{online}(S,a))\)</span></p>
 </section>
 </section>
 
@@ -129,6 +179,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="05_QLearning.html" class="btn btn-neutral float-left" title="Q Learning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="07_reinforce.html" class="btn btn-neutral float-right" title="Monte Carlo Reinforce (Policy-Gradient)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

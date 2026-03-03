@@ -16,6 +16,8 @@
       <script src="../_static/documentation_options.js?v=2709fde1"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -54,6 +56,10 @@
 <li class="toctree-l1"><a class="reference internal" href="05_QLearning.html">Q Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06_DQN.html">DQN</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Policy-Based</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="07_reinforce.html">Monte Carlo Reinforce (Policy-Gradient)</a></li>
+</ul>
 
         </div>
       </div>
@@ -81,6 +87,66 @@
              
   <section class="tex2jax_ignore mathjax_ignore" id="policy-based-methods">
 <h1>Policy-Based Methods<a class="headerlink" href="#policy-based-methods" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p>No learning of any intermediate value function: directly learning policy</p></li>
+<li><p>Recap: RL is based on Reward Hypothesis. {All goals can be described as the maximization of the expected cummulative reward}</p></li>
+</ul>
+<section id="value-based-policy-based-and-actor-critic-methods">
+<h2>Value-Based, Policy-Based and Actor-Critic Methods:<a class="headerlink" href="#value-based-policy-based-and-actor-critic-methods" title="Link to this heading"></a></h2>
+<ul>
+<li><p>In value-based methods</p>
+<ul class="simple">
+<li><p>optimal value function leads to optimal policy <span class="math notranslate nohighlight">\(\pi^*\)</span></p></li>
+<li><p>Minimize the loss between predicted and target value</p></li>
+<li><p>Policy is predefined</p></li>
+</ul>
+</li>
+<li><p>In policy-based methods, we directly learn to approximate <span class="math notranslate nohighlight">\(\pi^*\)</span>, without having to learn a value function</p>
+<ul>
+<li><p>We parametrize the policy. For instance, using <span class="math notranslate nohighlight">\(\pi_\theta\)</span>, this policy will output probability distributions over actions (stochastic)</p>
+<p>Stochastic Policy <span class="math notranslate nohighlight">\(\implies \pi_\theta(S) = P[A|S ; \theta]\)</span></p>
+</li>
+<li><p>Goal to maximize the performance of parametrized policy using gradient ascent
+Actor-Critic</p></li>
+</ul>
+</li>
+<li><p>Actor-Critic - It’s like a combination of value-based and policy-based {more details in further sections}</p></li>
+</ul>
+<p>Now, we can directly optimize the parameters <span class="math notranslate nohighlight">\(\pi_\theta\)</span> that leads to best expected return. For that, we define an objective function <span class="math notranslate nohighlight">\(J(\theta)\)</span>, that is, expected cummulative reward, and we will find value <span class="math notranslate nohighlight">\(\theta\)</span> that maximizes the function.</p>
+</section>
+<section id="the-difference-between-policy-based-and-policy-gradient">
+<h2>The Difference between Policy-Based and Policy-Gradient<a class="headerlink" href="#the-difference-between-policy-based-and-policy-gradient" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Policy-gradient is subclass of policy-based methods</p></li>
+<li><p>In policy-based, the optimization is on-policy for each update, we only use data collected by our most recent version of <span class="math notranslate nohighlight">\(\pi_\theta\)</span>.</p></li>
+</ul>
+<p>The difference between these two, lie on how we optimize parameter <span class="math notranslate nohighlight">\(\theta\)</span></p>
+<ol class="arabic simple">
+<li><p>In policy-based methods, we search directly for <span class="math notranslate nohighlight">\(\pi^*\)</span>. We optimize ‘<span class="math notranslate nohighlight">\(\theta\)</span>’ indirectly by maximizing the local approximation of objective function with techniques like - hill climbing, simulated annealing or evolution strategies</p></li>
+<li><p>In policy-gradient methods, we optimize <span class="math notranslate nohighlight">\(\theta\)</span> directly by performing gradient ascent on the performance of objective function <span class="math notranslate nohighlight">\(J(\theta)\)</span></p></li>
+</ol>
+</section>
+<section id="advantages-over-value-based-methods">
+<h2>Advantages over value-based methods<a class="headerlink" href="#advantages-over-value-based-methods" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>In policy gradient, we estimated policy directly without storing additional data.</p></li>
+<li><p>Policy gradient, can learn a stochastic policy. Because of this</p>
+<ul class="simple">
+<li><p>We don’t implement any explore/exploit. Since we output a probability distribution of actions. It explores without always taking same trajectory</p></li>
+<li><p>Get rid of problem of perceptual aliasing. It is when 2 states seem same but need different actions</p></li>
+</ul>
+</li>
+<li><p>Policy gradient are more effective in high-dimensional action spaces and continuous action spaces</p></li>
+<li><p>Policy gradient has better convergence property due to stochastic behavior, because in value-based a small change in outcome of action may change the whole policy to choose different action</p></li>
+</ol>
+</section>
+<section id="disadvantages-over-value-based">
+<h2>Disadvantages over value-based<a class="headerlink" href="#disadvantages-over-value-based" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Frequently, Policy Gradient converges to local maximum instead of global optimum</p></li>
+<li><p>Goes slower, so it can take longer to train</p></li>
+</ol>
+</section>
 </section>
 
 
