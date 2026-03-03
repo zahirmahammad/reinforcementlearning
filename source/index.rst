@@ -3,16 +3,28 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-RLDocs documentation
+Reinforcement Learning documentation
 ====================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+.. Add your content using ``reStructuredText`` syntax. See the
+.. `reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
+.. documentation for details.
 
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   :titlesonly:
+   :caption: Reinforcement Learning
 
-   quickstart
+   mdfiles/01_intro_rl1
+   mdfiles/02_intro_rl2
+   mdfiles/03_value_based
+   mdfiles/04_policy_based
+
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:
+   :caption: Value-Based
+
+   mdfiles/05_QLearning
+   mdfiles/06_DQN
