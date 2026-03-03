@@ -28,3 +28,10 @@ Reinforcement Learning documentation
 
    mdfiles/05_QLearning
    mdfiles/06_DQN
+
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:
+   :caption: Policy-Based
+
+   mdfiles/07_reinforce

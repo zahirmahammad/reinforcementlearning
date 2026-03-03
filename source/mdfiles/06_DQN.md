@@ -37,5 +37,44 @@ We need to preprocess the input $\rightarrow$ to reduce complexity of state $\ri
 
 - DQL has 2 phases
 
-    - Sampling
-    - Training
+    - Sampling - We perform actions and store experience tuples in replay memory
+    - Training - Select a small batch of tuples randomly and learn from this batch using gradient descent update
+  
+- DQL training might suffer from instability, mainly because of combining a non-linear Q-value function(nueral net) and bootstrapping (when we update targets with existinf estimated not actual return)
+  
+- To stabilize, we implement 3 solutions
+    1. Experience replay to make more efficient use of experience
+    2. Fixed Q-target to stabilize the training
+    3. Double DQL, to handle the problem of overestimation of Q-values
+
+## 1. Why replay memory?
+- Usually in online RL, the agent interacts with the env, gets experiences, learns from them and discards and is not efficient.
+
+    Experience replay helps by using the experiences of training more efficiently. We use replay buffer that saves experience samples
+
+- Avoid forgetting previous experiences and reduce correlation between experiences (catastrophic forgetting)
+
+    We initialize a replay memory buffer 'D' with capacity N.
+
+## 2. Fixed Q-Target
+
+- In the TD error, we calculate difference between TD-target (Q-target) and current Q-value (estimation of Q)
+
+    But we don't know real TD target. To avoid oscillations while training in the initial it is just garbage values. We use 2 seperate networks and update (copy) the parameters from DQN to target network every "c" steps
+
+## 3. Double DQN
+
+- The problem of overestimation of values
+  
+    $$V(S_t) \leftarrow V(S_t) + \alpha[R_{t+1}+\gamma V(S_{t+1}) - V(S_t)]$$
+
+- Simple Ques: How are we sure about best action for next state has the highest Q-value in "Neural Net". Since the accuracy of Q-values depends on what action we tried and states we explored.
+- In the initial since Q-values are noisy, the best action can lead to false positives. If non-optimal are give priority, then there is no point.
+
+For solution, we use
+1. Q-Network: to select best action for next state (highest Q-Value)
+2. Target Network: to calculate the target Q-value of that action at next state (estimation)
+
+Normal DQN  $ \implies y = r + \gamma Q_{target}(S, a)$
+
+Double DQN $\implies y = r + \gamma Q_{target}(S, argmax_a Q_{online}(S,a))$
