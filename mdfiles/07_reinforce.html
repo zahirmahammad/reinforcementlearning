@@ -109,6 +109,52 @@
 </ul>
 </li>
 </ul>
+<section id="diving-deeper">
+<h2>Diving Deeper<a class="headerlink" href="#diving-deeper" title="Link to this heading"></a></h2>
+<p>Stochastic Policy <span class="math notranslate nohighlight">\(\implies \pi_\theta (S) = P[A | S ;\theta]\)</span></p>
+<p>Objective function <span class="math notranslate nohighlight">\(\implies J(\theta)\)</span></p>
+<p>The objective function gives us the performance of the agent given a trajectory (state-action sequence without considering reward) and outputs the expected cummulative reward</p>
+<p><span class="math notranslate nohighlight">\(J(\theta) = E_{\tau \sim \pi} [R(\tau)]\)</span></p>
+<p><span class="math notranslate nohighlight">\(R_{(\tau)} = r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3}+....\)</span></p>
+<p><span class="math notranslate nohighlight">\(\tau\)</span> = Trajectory (Sequence of states and actions)</p>
+<ul>
+<li><p>Since <span class="math notranslate nohighlight">\(J(\theta)\)</span> is “expected” return, it is the weighted average (where the weights are given by <span class="math notranslate nohighlight">\(P(\tau, \theta)\)</span>) of all possible values that <span class="math notranslate nohighlight">\(R(\tau)\)</span> can take</p>
+<div class="math notranslate nohighlight">
+\[J(\theta) = \sum_\tau P(\tau; \theta) R(\tau)\]</div>
+<p><span class="math notranslate nohighlight">\(\sum_\tau\)</span> = we calcuate <span class="math notranslate nohighlight">\(J(\theta)\)</span> by summing all trajectories, the probability of taking that trjectories give <span class="math notranslate nohighlight">\(\theta\)</span></p>
+<p><span class="math notranslate nohighlight">\(P(\tau; \theta)\)</span> = Probability of trjectories (depends on <span class="math notranslate nohighlight">\(\theta\)</span>; which is policy parameters)</p>
+<div class="math notranslate nohighlight">
+\[P(\tau; \theta) = \Pi_{t=0}P(S_{t+1} | S_t, a_t) \pi_\theta(a_t | S_t)\]</div>
+<p><span class="math notranslate nohighlight">\(P(S_{t+1} | S_t, a_t)\)</span> = Environment dynamics (state distributions)</p>
+<p><span class="math notranslate nohighlight">\(\pi_\theta (a_t | S_t)\)</span> = Probability of taking <span class="math notranslate nohighlight">\(a_t\)</span> at <span class="math notranslate nohighlight">\(S_t\)</span></p>
+</li>
+<li><p>Our objective then is to maximize the expected cummulative reward by finding ‘<span class="math notranslate nohighlight">\(\theta\)</span>’ that outputs best action probability distributions</p>
+<div class="math notranslate nohighlight">
+\[max_\theta J(\theta) = E_{\tau \sim \pi_\theta} [R_\tau]\]</div>
+</li>
+</ul>
+</section>
+<section id="gradient-ascent-and-policy-gradient-theorem">
+<h2>Gradient Ascent and Policy-Gradient Theorem<a class="headerlink" href="#gradient-ascent-and-policy-gradient-theorem" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Policy-gradient is an optimization problem.</p></li>
+<li><p>Find values of <span class="math notranslate nohighlight">\(\theta\)</span> that maximized our objective function <span class="math notranslate nohighlight">\(J(\theta)\)</span></p></li>
+<li><p>Solution: Gradient Ascent (opp. if Gradient Descent)</p>
+<ul>
+<li><p>Update step <span class="math notranslate nohighlight">\(\implies\)</span> <span class="math notranslate nohighlight">\(\theta \leftarrow \theta + \alpha \nabla_\theta J(\theta)\)</span></p></li>
+</ul>
+</li>
+<li><p>We still have 2 problems with computing <span class="math notranslate nohighlight">\(\nabla_\theta J(\theta)\)</span></p>
+<ol class="arabic simple">
+<li><p>We can’t calculate true gradient of objective function since it requires calculating probability of each possible trajectory. So, we calculate a gradient estimation with a smaple-based estimation (collect some trajectories)</p></li>
+<li><p>To differentiate objective function, we need to differentiate state dynamics, which we may not know.</p></li>
+</ol>
+</li>
+</ul>
+<p>Solution: <strong>Policy Gradient Theorem</strong></p>
+<p>For any differentiable policy and for any policy objective function, the policy gradient is</p>
+<p><span class="math notranslate nohighlight">\(\nabla_\theta J(\theta) = E_{\pi_\theta}[\nabla_\theta log \pi_\theta (a_t|S_t) R(\tau)] = \hat{g}\)</span></p>
+</section>
 </section>
 
 
