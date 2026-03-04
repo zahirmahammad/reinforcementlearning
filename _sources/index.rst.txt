@@ -35,3 +35,4 @@ Reinforcement Learning documentation
    :caption: Policy-Based
 
    mdfiles/07_reinforce
+   mdfiles/08_actor_critic

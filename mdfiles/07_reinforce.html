@@ -21,6 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Actor-Critic Methods" href="08_actor_critic.html" />
     <link rel="prev" title="DQN" href="06_DQN.html" /> 
 </head>
 
@@ -58,6 +59,7 @@
 <p class="caption" role="heading"><span class="caption-text">Policy-Based</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Monte Carlo Reinforce (Policy-Gradient)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08_actor_critic.html">Actor-Critic Methods</a></li>
 </ul>
 
         </div>
@@ -151,9 +153,69 @@
 </ol>
 </li>
 </ul>
-<p>Solution: <strong>Policy Gradient Theorem</strong></p>
+</section>
+<section id="solution-policy-gradient-theorem">
+<h2>Solution: <strong>Policy Gradient Theorem</strong><a class="headerlink" href="#solution-policy-gradient-theorem" title="Link to this heading"></a></h2>
 <p>For any differentiable policy and for any policy objective function, the policy gradient is</p>
 <p><span class="math notranslate nohighlight">\(\nabla_\theta J(\theta) = E_{\pi_\theta}[\nabla_\theta log \pi_\theta (a_t|S_t) R(\tau)] = \hat{g}\)</span></p>
+</section>
+<section id="the-reinforce-algorithm-monte-carlo-reinforce">
+<h2>The Reinforce Algorithm [Monte-Carlo Reinforce]<a class="headerlink" href="#the-reinforce-algorithm-monte-carlo-reinforce" title="Link to this heading"></a></h2>
+<p>Also called Monte-Carlo policy gradient; uses an estimate return from an episode to update the policy parameters <span class="math notranslate nohighlight">\(\theta\)</span></p>
+<p>In a loop:</p>
+<ul class="simple">
+<li><p>Use policy <span class="math notranslate nohighlight">\(\pi_\theta\)</span> to collect episode <span class="math notranslate nohighlight">\(\tau\)</span></p></li>
+<li><p>Use episode to estimate gradient, <span class="math notranslate nohighlight">\(\hat{g} = \nabla_\theta J(\theta)\)</span></p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\nabla_\theta J_\theta = \sum_{t=0} \nabla_\theta log\pi_\theta (a_t | S_t)R(\tau)\)</span></p></li>
+</ul>
+</li>
+<li><p>Update weights of policy : <span class="math notranslate nohighlight">\(\theta \leftarrow \theta + \alpha \hat{g}\)</span></p></li>
+</ul>
+<p><span class="math notranslate nohighlight">\(\nabla_\theta log \pi_\theta(a_t | S_t) \rightarrow\)</span> is the direction of steepest increase of (log) probability of selection <span class="math notranslate nohighlight">\(a_t\)</span> from state <span class="math notranslate nohighlight">\(S_t\)</span>, tells us how we should change the weights of policy</p>
+<p><span class="math notranslate nohighlight">\(R(\tau)\)</span> is scoring function</p>
+<p>If return is high, it will push up probabilities, else it will push down the probabilities of (state, action) combinations</p>
+<p>We can also collect multiple episode to estimate gradient</p>
+<p><span class="math notranslate nohighlight">\(\nabla_\theta J(\theta) \approx \hat{g} = \frac{1}{m}\sum_{i=1}^m \sum_{t=0} \nabla_\theta log \pi_\theta (a_t^{i} | S_t^{i}) R(\tau^{i})\)</span></p>
+</section>
+<section id="optional-policy-gradient-theorem-derivation">
+<h2>[Optional] Policy-Gradient Theorem Derivation<a class="headerlink" href="#optional-policy-gradient-theorem-derivation" title="Link to this heading"></a></h2>
+<div class="math notranslate nohighlight">
+\[J(\theta) = \sum_\tau P(\tau; \theta)R(\tau)\]</div>
+<div class="math notranslate nohighlight">
+\[P(\tau; \theta) = \Pi_{t=0} P(S_{t+1} | S_t, a_t) \pi_\theta(a_t | S_t)\]</div>
+<p>Gradient;</p>
+<div class="math notranslate nohighlight">
+\[\nabla_\theta J(\theta) = \nabla_\theta [\sum_\tau P(\tau; \theta)R(\tau)]\]</div>
+<p>Multiply RHS with <span class="math notranslate nohighlight">\(\frac{P(\tau; \theta)}{P(\tau; \theta)}\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+\nabla_\theta J(\theta) = \sum_\tau \frac{P(\tau; \theta)}{P(\tau; \theta)} \nabla_\theta P(\tau; \theta) R(\tau)
+\]</div>
+<p>as <span class="math notranslate nohighlight">\(R(\tau)\)</span> is independent of <span class="math notranslate nohighlight">\(\theta\)</span></p>
+<div class="math notranslate nohighlight">
+\[\nabla_\theta J(\theta) = \sum_\tau P(\tau; \theta) \frac{\nabla_\theta P(\tau; \theta)}{P(\tau; \theta)} R(\tau)\]</div>
+<p><span class="math notranslate nohighlight">\(\frac{d}{dx}log(f(x)) = \frac{1}{f(x)} \frac{d}{dx}f(x)\)</span></p>
+<div class="math notranslate nohighlight">
+\[\nabla_\theta J(\theta) = \sum_\tau P(\tau; \theta) \nabla_\theta log(P(\tau; \theta)) R(\tau)\]</div>
+<p>(definition of expectation)</p>
+<div class="math notranslate nohighlight">
+\[\nabla_\theta J(\theta) = E_\tau[\nabla_\theta log(P(\tau, \theta)) R(\tau)]\]</div>
+<p>Now,</p>
+<div class="math notranslate nohighlight">
+\[\nabla_\theta log(P(\tau | \theta)) = \nabla_\theta log[\Pi_{t=1}^H P(S_{t+1} | S_t, a_t). \pi_\theta (a_t | S_t)]\]</div>
+<p>log of product is sum of logs</p>
+<div class="math notranslate nohighlight">
+\[\nabla_\theta log(P(\tau | \theta)) =\nabla_\theta[\sum_{t=1} logP(S_{t+1} | S_t, a_t) + log \pi_\theta(a_t | S_t)]\]</div>
+<p>first term independent <span class="math notranslate nohighlight">\(\theta\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\nabla_\theta log(P(\tau | \theta)) =\sum_{t=1} \nabla_\theta log[\pi_\theta(a_t | S_t)]\]</div>
+<p>Hence,</p>
+<div class="math notranslate nohighlight">
+\[\nabla_\theta J(\theta) = E_\tau [\sum_t(\nabla_\theta log(\pi_\theta(a_t | S_t))) R(\tau)]\]</div>
+<p>Expectation can be approximated over “<span class="math notranslate nohighlight">\(m\)</span>” trajectories</p>
+<div class="math notranslate nohighlight">
+\[\nabla_\theta J(\theta) = \frac{1}{m} \sum_{i=1}^m \sum_{t=1}^H \nabla_\theta log \pi_\theta(a_t^i | S_t^i) R(\tau^i)\]</div>
 </section>
 </section>
 
@@ -162,6 +224,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="06_DQN.html" class="btn btn-neutral float-left" title="DQN" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="08_actor_critic.html" class="btn btn-neutral float-right" title="Actor-Critic Methods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
