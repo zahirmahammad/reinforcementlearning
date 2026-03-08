@@ -16,6 +16,8 @@
       <script src="../_static/documentation_options.js?v=2709fde1"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -85,6 +87,117 @@
              
   <section class="tex2jax_ignore mathjax_ignore" id="actor-critic-methods">
 <h1>Actor-Critic Methods<a class="headerlink" href="#actor-critic-methods" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p>Policy-Based methods - We aim to optimize policy directly without using a value function</p></li>
+<li><p>Reinforce - Policy-Gradient methods - optimizes policy directly by estimating weights using Gradient Ascent</p></li>
+<li><p>Policy Gradient estimation is the direction of steepest increase in “return”</p></li>
+<li><p>In reinforce, since we use MC sampling to estimate return (entire episode to calculate return), we have significatn varience in policy gradient estimation</p></li>
+<li><p>Monte Carlo leads to slower training since we need a lot of samples to mitigate it.</p></li>
+</ul>
+<section id="actor-critic">
+<h2>Actor-Critic<a class="headerlink" href="#actor-critic" title="Link to this heading"></a></h2>
+<p>A hybrid architecture combining “value-based” and “Policy-based” ti stabilize the training by reducing the variance using</p>
+<ul class="simple">
+<li><p>An Actor - control how our agent behaves (Policy-based)</p></li>
+<li><p>A Critic -  measure how good the taken action is (value-based)</p></li>
+</ul>
+<p>We’ll train Advantage Actor Critic (A2C)</p>
+</section>
+<section id="the-problem-of-variance-in-reinforce">
+<h2>The Problem of Variance in Reinforce<a class="headerlink" href="#the-problem-of-variance-in-reinforce" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>In Reinforce, we want to increase the probability of actions in a trajectory proportionally to how high the return is</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\nabla_\theta J(\theta) = \sum_{t=0} \nabla_\theta log \pi_\theta (a_t | S_t) R(\tau)\]</div>
+<ul class="simple">
+<li><p>The return <span class="math notranslate nohighlight">\(R(\tau)\)</span> is calculated using a MC sampling. We collect a trajectory and calculate the discounted return, and use this score to increase or decrease the probability of every action taken in that trajectory</p></li>
+<li><p>The advantage is “its unbiased”. Since, we are not estimating any return {using true return}</p></li>
+<li><p>Given, environment stochasticity (random events of episode), and stochasticity of policy, trajectories can lead to different returns, which lead to high variance.</p></li>
+<li><p>Consequently, same starting state can lead to very different returns</p></li>
+</ul>
+<p>One solution to mitigate high variance by using a large number of trajectories, hoping that the variance introduced in anyone trajectory will be reduced in aggregate and provide a “true” estimate of return</p>
+<p>However, increasing batch-size, reduces sample efficiency {need another method}</p>
+</section>
+<section id="advantage-actor-critic-a2c">
+<h2>Advantage Actor-Critic (A2C)<a class="headerlink" href="#advantage-actor-critic-a2c" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Reduce variance of Reinforce, train our agent faster and better</p></li>
+<li><p>Use a combo of Policy-Based and Value-Based Method</p></li>
+<li><p>The idea behind Actor-Critic. We learn 2 function approximatoins</p>
+<ol class="arabic simple">
+<li><p>A policy that controls how our agent acts {<span class="math notranslate nohighlight">\(\pi_\theta (s)\)</span>}</p></li>
+<li><p>A value function to assist the policy update by measuring how good the action is {<span class="math notranslate nohighlight">\(\hat{q}_w (S, a)\)</span>}</p></li>
+</ol>
+</li>
+</ul>
+</section>
+<section id="actor-critic-process">
+<h2>Actor-Critic Process<a class="headerlink" href="#actor-critic-process" title="Link to this heading"></a></h2>
+<ul>
+<li><p>At each timestep “<span class="math notranslate nohighlight">\(t\)</span>”, we get current state <span class="math notranslate nohighlight">\(S_t\)</span> from eanv and pass to Actor and Critic.</p></li>
+<li><p>Policy takes <span class="math notranslate nohighlight">\(S_t\)</span> and outputs an Action <span class="math notranslate nohighlight">\(A_t\)</span></p></li>
+<li><p>Critic takes the action “<span class="math notranslate nohighlight">\(A_t\)</span>” and state “S_t”, computes the value of taking that <span class="math notranslate nohighlight">\(A_t\)</span> at <span class="math notranslate nohighlight">\(S_t\)</span> {Q-Value}</p></li>
+<li><p>The <span class="math notranslate nohighlight">\(A_t\)</span> performed in environment <span class="math notranslate nohighlight">\(\rightarrow S_{t+1}\)</span> and <span class="math notranslate nohighlight">\(R_{t+1}\)</span></p></li>
+<li><p>Actor updates its policy parameters using Q values</p>
+<div class="math notranslate nohighlight">
+\[\Delta \theta = \alpha \nabla_\theta(log \pi_\theta(S, a)) \hat{q_w} (S, a)\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\Delta \theta \implies\)</span> change in policy parameters</p></li>
+<li><p><span class="math notranslate nohighlight">\(\hat{q_w} (S, a) \implies\)</span> action-value estimation</p></li>
+</ul>
+</li>
+<li><p>With updated parameters, Actor produces next action <span class="math notranslate nohighlight">\(A_{t+1}\)</span> for <span class="math notranslate nohighlight">\(S_{t+1}\)</span></p></li>
+<li><p>The Critic then updates parameters</p>
+<div class="math notranslate nohighlight">
+\[\Delta w = \beta[R(S, a) + \gamma \hat{q}_w (S_{t+1}, a{t+1}) = \hat{q}_w (S_t, a_t)] \nabla_w \hat{q} (S_t, a_t)\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\beta \implies\)</span> learning rate</p></li>
+<li><p><span class="math notranslate nohighlight">\(\nabla_w \hat{q} (S_t, a_t) \implies\)</span> grad of value function</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="adding-advantage-in-actor-critic-a2c">
+<h2>Adding Advantage in Actor-Critic (A2C)<a class="headerlink" href="#adding-advantage-in-actor-critic-a2c" title="Link to this heading"></a></h2>
+<ul>
+<li><p>More stabilized learning by Advantage function as “critic” instead of action-value function</p></li>
+<li><p>The idea is Advantage function calculates relative advantage of action compared to others possible at a state. {how taking that action at a state is better compared to average value of state} {Subtracting mean value of state from state-action pair}</p>
+<div class="math notranslate nohighlight">
+\[A(S, a) = Q(S, a) - V(s)\]</div>
+</li>
+<li><p>In other words, it calculated extra reward we get if we take action than mean reward we get at that state</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(A(S, a) &gt; 0\)</span>; our gradient is pushed in that direction</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(A(S, a) &lt; 0\)</span>; our gradient is pushed in opposite direction {as it does worse}</p></li>
+<li><p>We have 2 value functions here <span class="math notranslate nohighlight">\(\rightarrow Q(S, a)\)</span> and <span class="math notranslate nohighlight">\(V(s)\)</span></p>
+<ul class="simple">
+<li><p>but, <span class="math notranslate nohighlight">\(Q(S, a) = r + \gamma V(S^`)\)</span></p></li>
+<li><p>We use TD error as a good estimate of advantage function</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(A(S, a) = r + \gamma V(S^`) - V(S)\)</span></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Critic Update derivation {we use <span class="math notranslate nohighlight">\(\phi\)</span> for parameters}</p>
+<p>Error = <span class="math notranslate nohighlight">\(R_t - V_\phi(S)\)</span></p>
+<p><span class="math notranslate nohighlight">\(R_t = r + \gamma V_\phi (S_{t+1})\)</span></p>
+<p>Error = <span class="math notranslate nohighlight">\(r + \gamma V_\phi (S_{t+1}) - V(S_t)\)</span></p>
+<p>{<span class="math notranslate nohighlight">\(r + \gamma V_\phi (S_{t+1}) - V(S_t)\)</span> is TD Error}</p>
+<p>In ML for loss we use Mean square error <span class="math notranslate nohighlight">\(L = \frac{1}{2} \delta_t^2\)</span></p>
+<p>Applying Gradient gives</p>
+<p><span class="math notranslate nohighlight">\(\nabla_\phi L = - \delta_t \nabla_\phi V_\phi (S_t)\)</span></p>
+<p>update becomes</p>
+<p><span class="math notranslate nohighlight">\(\phi \rightarrow \phi + \alpha \delta_t \nabla_\phi V_\phi (S_t)\)</span></p>
+</li>
+</ul>
+<p>Notice, we didn’t take <span class="math notranslate nohighlight">\(\nabla_\phi V_\phi (S_{t+1})\)</span>; if we take that it makes training unstable, since the goal would be moving</p>
+<p>Actor-update</p>
+<div class="math notranslate nohighlight">
+\[\nabla_\theta J = E[\nabla_\theta log \pi_\theta (a | S). A(S, a)]\]</div>
+<div class="math notranslate nohighlight">
+\[A(S, a) = \delta_t\]</div>
+</section>
 </section>
 
 
