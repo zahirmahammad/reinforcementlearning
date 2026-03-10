@@ -1,4 +1,4 @@
-# Actor-Critic Methods
+# Actor-Critic Method - A2C
 
 - Policy-Based methods - We aim to optimize policy directly without using a value function
 - Reinforce - Policy-Gradient methods - optimizes policy directly by estimating weights using Gradient Ascent
