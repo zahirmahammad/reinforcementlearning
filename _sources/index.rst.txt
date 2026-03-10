@@ -37,3 +37,10 @@ Reinforcement Learning documentation
    mdfiles/07_reinforce
    mdfiles/08_actor_critic
    mdfiles/09_PPO
+
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:
+   :caption: Advanced
+
+   mdfiles/10_multi_agent

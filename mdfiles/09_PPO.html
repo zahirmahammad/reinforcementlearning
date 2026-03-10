@@ -16,9 +16,12 @@
       <script src="../_static/documentation_options.js?v=2709fde1"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Intro to Multi-agent and AI vs AI" href="10_multi_agent.html" />
     <link rel="prev" title="Actor-Critic Method - A2C" href="08_actor_critic.html" /> 
 </head>
 
@@ -59,6 +62,10 @@
 <li class="toctree-l1"><a class="reference internal" href="08_actor_critic.html">Actor-Critic Method - A2C</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">PPO - Proximal Policy Optimization</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="10_multi_agent.html">Intro to Multi-agent and AI vs AI</a></li>
+</ul>
 
         </div>
       </div>
@@ -86,6 +93,209 @@
              
   <section class="tex2jax_ignore mathjax_ignore" id="ppo-proximal-policy-optimization">
 <h1>PPO - Proximal Policy Optimization<a class="headerlink" href="#ppo-proximal-policy-optimization" title="Link to this heading"></a></h1>
+<p>Proximal Policy Optimization: An architecture that improces our agent’s training stability by avoiding policy updates that are too large</p>
+<p>To do that, we use a ratio that indicates the difference between our current and old policy and clip this ratio to a specific range [<span class="math notranslate nohighlight">\(1-\epsilon\)</span>, <span class="math notranslate nohighlight">\(1+\epsilon\)</span>]</p>
+<p>This will ensure that our policy update will not be too large and that the training is more stable</p>
+<section id="the-intuition-behind-ppo">
+<h2>The intuition behind PPO<a class="headerlink" href="#the-intuition-behind-ppo" title="Link to this heading"></a></h2>
+<p>The idea with PPO is we want to improve the training stability of policy by limiting the change you make to the policy at each training epoch</p>
+</section>
+<section id="two-reasons">
+<h2>Two Reasons:<a class="headerlink" href="#two-reasons" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>We know empirically that smaller policy updates during training are more likely to coverge at an optimal solution</p></li>
+<li><p>A too-big step in a policy update can result in falling. “off the clif” (getting a bad policy) and taking a long time or even having no probability to recover</p></li>
+</ul>
+<p>— off the cliff image —</p>
+<p>We update conservatively</p>
+<ul class="simple">
+<li><p>HOw much current policy chnage compared to the former one using a ratio calculation between the current and former policy and we clip this ratio in a range [<span class="math notranslate nohighlight">\(1-\epsilon\)</span>, <span class="math notranslate nohighlight">\(1+\epsilon\)</span>], we remove the incentive for the current policy to go too far from old one</p></li>
+</ul>
+</section>
+<section id="clipped-surrogate-objective-function">
+<h2>Clipped Surrogate Objective Function<a class="headerlink" href="#clipped-surrogate-objective-function" title="Link to this heading"></a></h2>
+<ul>
+<li><p>The policy objective function</p>
+<div class="math notranslate nohighlight">
+\[L^{PG}(\theta) = E_t[log \pi_\theta (a_t | S_t) . A_t]\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(log \pi_\theta (a_t | S_t) \rightarrow\)</span> log probabilty of taking that action at that state</p></li>
+<li><p><span class="math notranslate nohighlight">\(A_t \rightarrow\)</span> Advantage if <span class="math notranslate nohighlight">\(A&gt;0\)</span>, this action is better than the other action possible at that state</p></li>
+</ul>
+</li>
+<li><p>We would push our agent to take action that lead to higher rewards and avoid harmful actions</p></li>
+<li><p>However, the problem comes from step size</p>
+<ul class="simple">
+<li><p>too small, training process goes too slow</p></li>
+<li><p>too high, there will be too much of variability in training</p></li>
+</ul>
+</li>
+<li><p>In PPO, we constrain our policy update with a objective function called “Clipped Surrogate Objective Function” - that will constrain the policy change in a small range using a clip</p></li>
+<li><p>This function is designed to avoid destructively large weights update</p>
+<div class="math notranslate nohighlight">
+\[L^{clip}(\theta) = \hat{E}_t[min(r_t (\theta) \hat{A}_t, clip(r_t (\theta), 1-\epsilon, 1+\epsilon) \hat{A}_t)]\]</div>
+</li>
+<li><p>The ratio function <span class="math notranslate nohighlight">\(\rightarrow r_t(\theta)\)</span></p>
+<div class="math notranslate nohighlight">
+\[r_t (\theta) = \frac{\pi_\theta (a_t | S_t)} {\pi_{\theta_{old}}(a_t | S_t)}\]</div>
+</li>
+</ul>
+<p>Its the probability of taking action <span class="math notranslate nohighlight">\(a_t\)</span> at state <span class="math notranslate nohighlight">\(S_t\)</span> in current policy divided by same for previous policy</p>
+<ul class="simple">
+<li><p>if <span class="math notranslate nohighlight">\(r_t(\theta) &gt; 1\)</span>, the action <span class="math notranslate nohighlight">\(a_t\)</span> at state <span class="math notranslate nohighlight">\(S_t\)</span> is more likely in the current policy than the old policy</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(r_t (\theta)\)</span> is between 0 and 1, the action is less likely for current policy than for the old one</p></li>
+</ul>
+<p>So, this probabilty ratio is an easy way to estimate the divergence between old and current policy</p>
+</section>
+<section id="the-unclipped-part-of-surrogate-objective-function">
+<h2>The unclipped part of Surrogate objective function<a class="headerlink" href="#the-unclipped-part-of-surrogate-objective-function" title="Link to this heading"></a></h2>
+<p><span class="math notranslate nohighlight">\(= r_t (\theta) \hat{A_t}\)</span></p>
+<p>the ratio can replace the log probability we use in policy objective function</p>
+<ul class="simple">
+<li><p>However, if the action taken is much more probable in our current policy than in our former, this would lead to significant policy gradient step and hence an excessive policy update</p></li>
+</ul>
+</section>
+<section id="the-clipped-part-of-surrogate-objective-function">
+<h2>The clipped part of Surrogate objective function<a class="headerlink" href="#the-clipped-part-of-surrogate-objective-function" title="Link to this heading"></a></h2>
+<p><span class="math notranslate nohighlight">\(= clip(r_t (\theta), 1 - \epsilon, 1 + \epsilon)\)</span></p>
+<ul class="simple">
+<li><p>We need to constrian this objective function by penalizing change that lead to a ratio far away from 1 (in paper, ratio varies from 0.8 to 1.2)</p></li>
+<li><p>By clipping the ratio, we ensure that we do not have a too large policy update because current can’t be too different</p></li>
+</ul>
+</section>
+<section id="solutions">
+<h2>2 Solutions<a class="headerlink" href="#solutions" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>TRPO (Trust Region Policy Optimization) - uses KL divergence constraints outside the objective function to constrain the policy update.</p>
+<ul class="simple">
+<li><p>But this method is complicated to implement and takes more computation time</p></li>
+</ul>
+</li>
+<li><p>PPO clip probability ratio directly in the objective function with its clipped surrogate objective function</p></li>
+</ol>
+<ul class="simple">
+<li><p>The clipped part is a version where <span class="math notranslate nohighlight">\(r_t (\theta)\)</span> is clipped between [<span class="math notranslate nohighlight">\(1-\epsilon, 1+\epsilon\)</span>]</p></li>
+<li><p><span class="math notranslate nohighlight">\(\epsilon\)</span> is a hyperparameter that helps us to define this clip range (in paper <span class="math notranslate nohighlight">\(\epsilon = 0.2\)</span>)</p></li>
+<li><p>Then, we take min. of clipped and non-clipped objective. So, the final objective is a lower-bound of unclipped objective</p></li>
+</ul>
+</section>
+<section id="visualize-the-clipped-surrogate-function">
+<h2>Visualize the Clipped Surrogate Function<a class="headerlink" href="#visualize-the-clipped-surrogate-function" title="Link to this heading"></a></h2>
+<p>– Add the graphs –</p>
+<p>We have 6 cases</p>
+<ol class="arabic simple">
+<li><p><span class="math notranslate nohighlight">\(r_t (\theta) \in [1-\epsilon, 1+\epsilon]\)</span> ; <span class="math notranslate nohighlight">\(A_t\)</span> is +ve ; <span class="math notranslate nohighlight">\(r_t (\theta) A_t\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(r_t (\theta) \in [1-\epsilon, 1+\epsilon]\)</span> ; <span class="math notranslate nohighlight">\(A_t\)</span> is -ve ; <span class="math notranslate nohighlight">\(r_t (\theta) A_t\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(r_t (\theta) &lt; [1-\epsilon, 1+\epsilon]\)</span> ; <span class="math notranslate nohighlight">\(A_t\)</span> is +ve ; <span class="math notranslate nohighlight">\(r_t (\theta) A_t\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(r_t (\theta) &lt; [1-\epsilon, 1+\epsilon]\)</span> ; <span class="math notranslate nohighlight">\(A_t\)</span> is -ve ; <span class="math notranslate nohighlight">\((1 - \epsilon) A_t\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(r_t (\theta) &gt; [1-\epsilon, 1+\epsilon]\)</span> ; <span class="math notranslate nohighlight">\(A_t\)</span> is +ve ; <span class="math notranslate nohighlight">\((1 + \epsilon) A_t\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(r_t (\theta) &gt; [1-\epsilon, 1+\epsilon]\)</span> ; <span class="math notranslate nohighlight">\(A_t\)</span> is -ve ; <span class="math notranslate nohighlight">\(r_t (\theta) A_t\)</span></p></li>
+</ol>
+<ul class="simple">
+<li><p>In 1 and 2; clipping doesnot apply since the ratio is between [<span class="math notranslate nohighlight">\(1-\epsilon, 1+\epsilon\)</span>]</p></li>
+<li><p>In 3, Advantage is positive, So you want to increase the probability of taking that action at that state</p></li>
+<li><p>But in 4, advantage is negative, the <span class="math notranslate nohighlight">\(r_t\)</span> is already less than range, we don’t want to decrease further, Hence gradient becomes zero</p></li>
+<li><p>In 5, advantage is positive, we don’t want to get too greedy we already have higher probability of taking that action in previous policy. Hence, gradient is “0”</p></li>
+<li><p>In 6, the advantage is negative, we want to decrease the probability of taking that action at that state.</p></li>
+<li><p>So, we only update the policy with unclipped objective part, when min. is the clipped objective part, we don’t update since the gradient will be “zero”</p></li>
+<li><p>We update only if</p>
+<ul>
+<li><p>Our ratio <span class="math notranslate nohighlight">\(\in [1-\epsilon, 1+\epsilon]\)</span></p></li>
+<li><p>Our ratio is outside range, but advantage leads to getting close to the range</p>
+<ul>
+<li><p>being below but, advantage &gt; 0</p></li>
+<li><p>being above but, advantage &lt; 0</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>The final clipped surrogate objective loss for PPO Actor-critic style looks like - a combination of clipped surrogate objective function, value loss function and entropy bonus</p>
+<div class="math notranslate nohighlight">
+\[L_t^{clip+VF+H} = \hat{E_t} [L_t^{clip} (\theta) - c_1 L_t^{VF(\theta)} + c_2 H[\pi_\theta](S_t)]\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(c_1, c_2\)</span> are coefficients</p></li>
+<li><p><span class="math notranslate nohighlight">\(L_t^{VF(\theta)}\)</span> is squared-error value loss <span class="math notranslate nohighlight">\((V_\theta(S_t) - V^{target})^2\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(H[\pi_\theta](S_t)\)</span>, entropy of policy at state <span class="math notranslate nohighlight">\(S_t\)</span></p></li>
+</ul>
+<p>We add entropy bonus for sufficient exploration</p>
+<ul class="simple">
+<li><p>In the above equation, we maximize the reward [objective function] later, while implementing we include negative for gradient descent</p></li>
+<li><p>We want <span class="math notranslate nohighlight">\(L^{clip} (\theta)\)</span> higher and minimize <span class="math notranslate nohighlight">\(L_t^{VF}\)</span> {squared error}, so we subtract.</p></li>
+<li><p>We add entropy term to improve exploration (Let’s talk about this)</p></li>
+</ul>
+</section>
+<section id="entropy">
+<h2>Entropy<a class="headerlink" href="#entropy" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Entropy is a measure of how stochastic (random) the policy’s action choices are</p></li>
+<li><p>We use <span class="math notranslate nohighlight">\(H(\pi)\)</span> for entropy</p></li>
+<li><p>Without entropy term</p>
+<ul>
+<li><p>policy quickly becomes deterministic</p></li>
+<li><p>stop exploring</p></li>
+<li><p>gets stuck in local optimum</p></li>
+</ul>
+</li>
+<li><p>With entropy term, It encourages</p>
+<ul>
+<li><p>trying different actions (we’ll talk how exactly this happens)</p></li>
+<li><p>better exploration during training</p></li>
+</ul>
+</li>
+</ul>
+<p><span class="math notranslate nohighlight">\(H[\pi_\theta](S) = - \sum_a \pi(a | S) log\pi(a | S)\)</span></p>
+<ul class="simple">
+<li><p>High entropy value <span class="math notranslate nohighlight">\(\rightarrow\)</span> very random actions</p>
+<ul>
+<li><p>Policy output <span class="math notranslate nohighlight">\(\rightarrow\)</span> [0.25, 0.25, 0.25, 0.25] <span class="math notranslate nohighlight">\(\rightarrow\)</span> high entropy</p></li>
+</ul>
+</li>
+<li><p>Low entropy value <span class="math notranslate nohighlight">\(\rightarrow\)</span> very deterministic actions</p>
+<ul>
+<li><p>Policy output <span class="math notranslate nohighlight">\(\rightarrow\)</span> [0.99, 0.01, 0.0, 0.0] <span class="math notranslate nohighlight">\(\rightarrow\)</span> low entropy</p></li>
+</ul>
+</li>
+</ul>
+<p>The entropy term is added to the objective to</p>
+<ul class="simple">
+<li><p>prevent policy from becoming deterministic too early</p></li>
+<li><p>encourage exploration during training</p></li>
+<li><p><span class="math notranslate nohighlight">\(c_2\)</span>, is the entropy coefficient (hyperparameter you choose)</p></li>
+</ul>
+<p>Facts</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(log\pi(a | S)\)</span> is always <span class="math notranslate nohighlight">\(&lt; 0\)</span>, as <span class="math notranslate nohighlight">\(0 &lt; \pi (a | S) \le 1\)</span></p></li>
+<li><p>So <span class="math notranslate nohighlight">\(\pi(a | S) log\pi(a | S) \le 0\)</span>, hence, <span class="math notranslate nohighlight">\(H[\pi](S) \ge 0\)</span>, entropy term is always positive</p></li>
+<li><p>Entropy addition to the equation tpically makes the probability distribution of policy to spread out and not get a peak eaerly</p></li>
+<li><p>But entropy is just added to objective function which means it is increasing the current objective value. How exactly is entropy contributing to reduce higher probabilities and even out other actions?</p></li>
+</ul>
+</section>
+<section id="entropy-s-contribution-to-the-equation">
+<h2>Entropy’s Contribution to the equation<a class="headerlink" href="#entropy-s-contribution-to-the-equation" title="Link to this heading"></a></h2>
+<p>We take gradient of the objective function</p>
+<p><span class="math notranslate nohighlight">\(\nabla_\theta J(\theta) = \nabla_\theta L_{policy} + c_2 \nabla_\theta H\)</span></p>
+<p><span class="math notranslate nohighlight">\(H(\pi_\theta) = - \sum_a \pi_\theta(a | S) log\pi_\theta(a | S)\)</span></p>
+<p><span class="math notranslate nohighlight">\(\frac{\partial H}{\partial \pi_\theta(a|S )} = -(log \pi_\theta (a|S) + 1)\)</span></p>
+<ol class="arabic simple">
+<li><p>If action probability is large, <span class="math notranslate nohighlight">\(\pi_\theta(a|s) \approx 0.99\)</span></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(-(log0.99 + 1) \approx -0.995\)</span> [decreases the objective when added]</p></li>
+</ul>
+</li>
+<li><p>If action probability is small, <span class="math notranslate nohighlight">\(\pi_\theta(a|s) \approx 0.05\)</span></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(-(log0.05 + 1) \approx 0.3\)</span> [increases the objective when added]</p></li>
+</ul>
+</li>
+</ol>
+<p>Hence, the probabilities are less peaked with this</p>
+<p>Note: Here, we didn’t consider gradient of <span class="math notranslate nohighlight">\(L_t^{VF}(\theta)\)</span>, because it is critic, it has different parameters, <span class="math notranslate nohighlight">\(\theta\)</span> = {<span class="math notranslate nohighlight">\(\theta_{actor}\)</span>, <span class="math notranslate nohighlight">\(\theta_{critic}\)</span>}</p>
+<ul class="simple">
+<li><p>Grad w.r.t actor parameters, <span class="math notranslate nohighlight">\(\nabla_{\theta_{actor}} J = \nabla_{\theta_{actor}} L_{policy} + c_2 \nabla_{\theta_{actor}}H\)</span></p></li>
+<li><p>Grad w.r.t critic parameters, <span class="math notranslate nohighlight">\(\nabla_{\theta_{critic}}J = -c_1\nabla_{\theta_{critic}}L_{value}\)</span></p></li>
+</ul>
+</section>
 </section>
 
 
@@ -93,6 +303,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="08_actor_critic.html" class="btn btn-neutral float-left" title="Actor-Critic Method - A2C" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="10_multi_agent.html" class="btn btn-neutral float-right" title="Intro to Multi-agent and AI vs AI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
