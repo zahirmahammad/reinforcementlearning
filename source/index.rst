@@ -36,3 +36,4 @@ Reinforcement Learning documentation
 
    mdfiles/07_reinforce
    mdfiles/08_actor_critic
+   mdfiles/09_PPO
