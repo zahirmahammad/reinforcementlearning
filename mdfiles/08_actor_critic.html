@@ -11,6 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
+    <link rel="shortcut icon" href="../_static/logo2.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=2709fde1"></script>
@@ -143,7 +144,7 @@
 <ul>
 <li><p>At each timestep “<span class="math notranslate nohighlight">\(t\)</span>”, we get current state <span class="math notranslate nohighlight">\(S_t\)</span> from eanv and pass to Actor and Critic.</p></li>
 <li><p>Policy takes <span class="math notranslate nohighlight">\(S_t\)</span> and outputs an Action <span class="math notranslate nohighlight">\(A_t\)</span></p></li>
-<li><p>Critic takes the action “<span class="math notranslate nohighlight">\(A_t\)</span>” and state “S_t”, computes the value of taking that <span class="math notranslate nohighlight">\(A_t\)</span> at <span class="math notranslate nohighlight">\(S_t\)</span> {Q-Value}</p></li>
+<li><p>Critic takes the action “<span class="math notranslate nohighlight">\(A_t\)</span>” and state “<span class="math notranslate nohighlight">\(S_t\)</span>”, computes the value of taking that <span class="math notranslate nohighlight">\(A_t\)</span> at <span class="math notranslate nohighlight">\(S_t\)</span> {Q-Value}</p></li>
 <li><p>The <span class="math notranslate nohighlight">\(A_t\)</span> performed in environment <span class="math notranslate nohighlight">\(\rightarrow S_{t+1}\)</span> and <span class="math notranslate nohighlight">\(R_{t+1}\)</span></p></li>
 <li><p>Actor updates its policy parameters using Q values</p>
 <div class="math notranslate nohighlight">
@@ -156,7 +157,7 @@
 <li><p>With updated parameters, Actor produces next action <span class="math notranslate nohighlight">\(A_{t+1}\)</span> for <span class="math notranslate nohighlight">\(S_{t+1}\)</span></p></li>
 <li><p>The Critic then updates parameters</p>
 <div class="math notranslate nohighlight">
-\[\Delta w = \beta[R(S, a) + \gamma \hat{q}_w (S_{t+1}, a{t+1}) = \hat{q}_w (S_t, a_t)] \nabla_w \hat{q} (S_t, a_t)\]</div>
+\[\Delta w = \beta[R(S, a) + \gamma \hat{q}_w (S_{t+1}, a_{t+1}) - \hat{q}_w (S_t, a_t)] \nabla_w \hat{q} (S_t, a_t)\]</div>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\beta \implies\)</span> learning rate</p></li>
 <li><p><span class="math notranslate nohighlight">\(\nabla_w \hat{q} (S_t, a_t) \implies\)</span> grad of value function</p></li>
@@ -188,8 +189,8 @@
 <li><p>Critic Update derivation {we use <span class="math notranslate nohighlight">\(\phi\)</span> for parameters}</p>
 <p>Error = <span class="math notranslate nohighlight">\(R_t - V_\phi(S)\)</span></p>
 <p><span class="math notranslate nohighlight">\(R_t = r + \gamma V_\phi (S_{t+1})\)</span></p>
-<p>Error = <span class="math notranslate nohighlight">\(r + \gamma V_\phi (S_{t+1}) - V(S_t)\)</span></p>
-<p>{<span class="math notranslate nohighlight">\(r + \gamma V_\phi (S_{t+1}) - V(S_t)\)</span> is TD Error}</p>
+<p>Error = <span class="math notranslate nohighlight">\(r + \gamma V_\phi (S_{t+1}) - V_\phi(S_t)\)</span></p>
+<p>{<span class="math notranslate nohighlight">\(r + \gamma V_\phi (S_{t+1}) - V_\phi(S_t)\)</span> is TD Error}</p>
 <p>In ML for loss we use Mean square error <span class="math notranslate nohighlight">\(L = \frac{1}{2} \delta_t^2\)</span></p>
 <p>Applying Gradient gives</p>
 <p><span class="math notranslate nohighlight">\(\nabla_\phi L = - \delta_t \nabla_\phi V_\phi (S_t)\)</span></p>
