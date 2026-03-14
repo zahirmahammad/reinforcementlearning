@@ -43,6 +43,12 @@ exclude_patterns = []
 html_theme = "sphinx_rtd_theme"
 # html_theme = "sphinx_book_theme"
 html_static_path = ['_static']
+html_theme_options = {
+    "logo_only": True,  # Only show logo (optional: shows logo instead of title in header)
+    "display_version": True,  # Show version next to logo
+}
+# html_logo = "_static/logo2.png"
+html_favicon = "_static/logo2.png"
 
 # --- Zahir ------
 html_theme_options = {

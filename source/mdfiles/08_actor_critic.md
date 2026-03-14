@@ -39,7 +39,7 @@ However, increasing batch-size, reduces sample efficiency {need another method}
 ## Actor-Critic Process
 - At each timestep "$t$", we get current state $S_t$ from eanv and pass to Actor and Critic.
 - Policy takes $S_t$ and outputs an Action $A_t$
-- Critic takes the action "$A_t$" and state "S_t", computes the value of taking that $A_t$ at $S_t$ {Q-Value}
+- Critic takes the action "$A_t$" and state "$S_t$", computes the value of taking that $A_t$ at $S_t$ {Q-Value}
 - The $A_t$ performed in environment $\rightarrow S_{t+1}$ and $R_{t+1}$
 - Actor updates its policy parameters using Q values
   
@@ -50,7 +50,7 @@ However, increasing batch-size, reduces sample efficiency {need another method}
 - With updated parameters, Actor produces next action $A_{t+1}$ for $S_{t+1}$
 - The Critic then updates parameters
     
-    $$\Delta w = \beta[R(S, a) + \gamma \hat{q}_w (S_{t+1}, a{t+1}) = \hat{q}_w (S_t, a_t)] \nabla_w \hat{q} (S_t, a_t)$$
+    $$\Delta w = \beta[R(S, a) + \gamma \hat{q}_w (S_{t+1}, a_{t+1}) - \hat{q}_w (S_t, a_t)] \nabla_w \hat{q} (S_t, a_t)$$
 
   - $\beta \implies$ learning rate
   - $\nabla_w \hat{q} (S_t, a_t) \implies$ grad of value function
@@ -75,9 +75,9 @@ However, increasing batch-size, reduces sample efficiency {need another method}
     
     $R_t = r + \gamma V_\phi (S_{t+1})$
     
-    Error = $r + \gamma V_\phi (S_{t+1}) - V(S_t)$
+    Error = $r + \gamma V_\phi (S_{t+1}) - V_\phi(S_t)$
 
-    {$r + \gamma V_\phi (S_{t+1}) - V(S_t)$ is TD Error}
+    {$r + \gamma V_\phi (S_{t+1}) - V_\phi(S_t)$ is TD Error}
 
     In ML for loss we use Mean square error $L = \frac{1}{2} \delta_t^2$
 
