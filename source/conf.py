@@ -48,7 +48,7 @@ html_theme_options = {
     "display_version": True,  # Show version next to logo
 }
 # html_logo = "_static/logo2.png"
-html_favicon = "_static/logo2.png"
+html_favicon = "_static/logo1.png"
 
 # --- Zahir ------
 html_theme_options = {
