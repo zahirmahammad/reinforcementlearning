@@ -1,0 +1,6 @@
+.wy-side-nav-search .wy-dropdown > a img.logo,
+.wy-side-nav-search > a img.logo {
+    width: 120px !important;
+    height: auto !important;
+    max-width: 120px !important;
+}

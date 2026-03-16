@@ -11,6 +11,9 @@ Reinforcement Learning documentation
 .. documentation for details.
 
 
+I tried to keep documentation as concise as possible 
+while explaining concepts clearly
+
 .. toctree::
    :maxdepth: 1
    :titlesonly:
@@ -24,7 +27,7 @@ Reinforcement Learning documentation
 .. toctree::
    :maxdepth: 1
    :titlesonly:
-   :caption: Value-Based
+   :caption: Value-Based Algorithms
 
    mdfiles/05_QLearning
    mdfiles/06_DQN
@@ -32,15 +35,27 @@ Reinforcement Learning documentation
 .. toctree::
    :maxdepth: 1
    :titlesonly:
-   :caption: Policy-Based
+   :caption: Policy-Based Algorithms
 
    mdfiles/07_reinforce
    mdfiles/08_actor_critic
    mdfiles/09_PPO
 
+
 .. toctree::
    :maxdepth: 1
    :titlesonly:
-   :caption: Advanced
+   :caption: Implementation in PyTorch
+
+   mdfiles/110_qlearn
+   mdfiles/111_dqn
+   mdfiles/112_reinforce
+   mdfiles/113_a2c
+   mdfiles/114_ppo
+
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:
+   :caption: Miscellaneous
 
    mdfiles/10_multi_agent

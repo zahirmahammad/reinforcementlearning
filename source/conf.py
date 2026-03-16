@@ -47,7 +47,10 @@ html_theme_options = {
     "logo_only": True,  # Only show logo (optional: shows logo instead of title in header)
     "display_version": True,  # Show version next to logo
 }
-# html_logo = "_static/logo2.png"
+html_css_files = [
+    'custom.css',
+]
+html_logo = "_static/logo2.png"
 html_favicon = "_static/logo1.png"
 
 # --- Zahir ------
