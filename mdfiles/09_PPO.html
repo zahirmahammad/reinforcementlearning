@@ -9,6 +9,7 @@
   <title>PPO - Proximal Policy Optimization &mdash; RLDocs 0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=fe9a56cb" />
 
   
     <link rel="shortcut icon" href="../_static/logo1.png"/>
@@ -22,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Intro to Multi-agent and AI vs AI" href="10_multi_agent.html" />
+    <link rel="next" title="QLearning in Pytorch" href="110_qlearn.html" />
     <link rel="prev" title="Actor-Critic Method - A2C" href="08_actor_critic.html" /> 
 </head>
 
@@ -36,6 +37,7 @@
           
           <a href="../index.html" class="icon icon-home">
             RLDocs
+              <img src="../_static/logo2.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -52,18 +54,26 @@
 <li class="toctree-l1"><a class="reference internal" href="03_value_based.html">Value-Based Methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="04_policy_based.html">Policy-Based Methods</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Value-Based</span></p>
+<p class="caption" role="heading"><span class="caption-text">Value-Based Algorithms</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="05_QLearning.html">Q Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06_DQN.html">DQN</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Policy-Based</span></p>
+<p class="caption" role="heading"><span class="caption-text">Policy-Based Algorithms</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="07_reinforce.html">Monte Carlo Reinforce (Policy-Gradient)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="08_actor_critic.html">Actor-Critic Method - A2C</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">PPO - Proximal Policy Optimization</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Advanced</span></p>
+<p class="caption" role="heading"><span class="caption-text">Implementation in PyTorch</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="110_qlearn.html">QLearning in Pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="111_dqn.html">DQN in Pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="112_reinforce.html">Reinforce in Pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="113_a2c.html">A2C in Pytorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="114_ppo.html">PPO in Pytorch</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="10_multi_agent.html">Intro to Multi-agent and AI vs AI</a></li>
 </ul>
@@ -94,29 +104,36 @@
              
   <section class="tex2jax_ignore mathjax_ignore" id="ppo-proximal-policy-optimization">
 <h1>PPO - Proximal Policy Optimization<a class="headerlink" href="#ppo-proximal-policy-optimization" title="Link to this heading"></a></h1>
-<p>Proximal Policy Optimization: An architecture that improces our agent’s training stability by avoiding policy updates that are too large</p>
-<p>To do that, we use a ratio that indicates the difference between our current and old policy and clip this ratio to a specific range [<span class="math notranslate nohighlight">\(1-\epsilon\)</span>, <span class="math notranslate nohighlight">\(1+\epsilon\)</span>]</p>
-<p>This will ensure that our policy update will not be too large and that the training is more stable</p>
-<section id="the-intuition-behind-ppo">
-<h2>The intuition behind PPO<a class="headerlink" href="#the-intuition-behind-ppo" title="Link to this heading"></a></h2>
-<p>The idea with PPO is we want to improve the training stability of policy by limiting the change you make to the policy at each training epoch</p>
-</section>
-<section id="two-reasons">
-<h2>Two Reasons:<a class="headerlink" href="#two-reasons" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>We know empirically that smaller policy updates during training are more likely to coverge at an optimal solution</p></li>
-<li><p>A too-big step in a policy update can result in falling. “off the clif” (getting a bad policy) and taking a long time or even having no probability to recover</p></li>
+<p><strong>Key Idea:</strong>  Modified architecture that improves our agent’s training stability by avoiding policy updates that are too large</p>
+<ul>
+<li><p>We use a ratio that indicates the difference between our current and old policy and clip this ratio to a specific range [<span class="math notranslate nohighlight">\(1-\epsilon\)</span>, <span class="math notranslate nohighlight">\(1+\epsilon\)</span>]</p></li>
+<li><p>The ratio function <span class="math notranslate nohighlight">\(\rightarrow r_t(\theta)\)</span></p>
+<div class="math notranslate nohighlight">
+\[r_t (\theta) = \frac{\pi_\theta (a_t | S_t)} {\pi_{\theta_{old}}(a_t | S_t)}\]</div>
+</li>
 </ul>
+<p>This will ensure that our policy update will not be too large and that the training is more stable</p>
+<section id="the-intuition">
+<h2>The Intuition<a class="headerlink" href="#the-intuition" title="Link to this heading"></a></h2>
+<p>Improve the training stability of policy - by limiting the change you make to the policy at each training epoch</p>
+</section>
+<section id="why-this-approach">
+<h2>Why this Approach:<a class="headerlink" href="#why-this-approach" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>We know empirically - smaller policy updates during training are more likely to converge at an optimal solution</p></li>
+<li><p>A too-big step in a policy update can result in falling “off the cliff” (getting a bad policy) and taking a long time or even having no probability to recover</p></li>
+</ol>
 <p>— off the cliff image —</p>
 <p>We update conservatively</p>
 <ul class="simple">
-<li><p>HOw much current policy chnage compared to the former one using a ratio calculation between the current and former policy and we clip this ratio in a range [<span class="math notranslate nohighlight">\(1-\epsilon\)</span>, <span class="math notranslate nohighlight">\(1+\epsilon\)</span>], we remove the incentive for the current policy to go too far from old one</p></li>
+<li><p>How much current policy change compared to the former one using a ratio calculation between the current and former policy and we clip this ratio in a range [<span class="math notranslate nohighlight">\(1-\epsilon\)</span>, <span class="math notranslate nohighlight">\(1+\epsilon\)</span>] (we remove the incentive for the current policy to go too far from old one)</p></li>
 </ul>
 </section>
-<section id="clipped-surrogate-objective-function">
-<h2>Clipped Surrogate Objective Function<a class="headerlink" href="#clipped-surrogate-objective-function" title="Link to this heading"></a></h2>
+<section id="the-objective-function">
+<h2>The Objective Function<a class="headerlink" href="#the-objective-function" title="Link to this heading"></a></h2>
+<p>(We call it “Clipped Surrogate Objective Function”)</p>
 <ul>
-<li><p>The policy objective function</p>
+<li><p>The policy objective function that we know</p>
 <div class="math notranslate nohighlight">
 \[L^{PG}(\theta) = E_t[log \pi_\theta (a_t | S_t) . A_t]\]</div>
 <ul class="simple">
@@ -131,28 +148,32 @@
 <li><p>too high, there will be too much of variability in training</p></li>
 </ul>
 </li>
-<li><p>In PPO, we constrain our policy update with a objective function called “Clipped Surrogate Objective Function” - that will constrain the policy change in a small range using a clip</p></li>
-<li><p>This function is designed to avoid destructively large weights update</p>
+<li><p>We constrain our policy update with a objective function called “Clipped Surrogate Objective Function” - that will constrain the policy change in a small range using a clip</p></li>
+<li><p>This new objective function in PPO - to avoid destructively large weights update</p>
 <div class="math notranslate nohighlight">
 \[L^{clip}(\theta) = \hat{E}_t[min(r_t (\theta) \hat{A}_t, clip(r_t (\theta), 1-\epsilon, 1+\epsilon) \hat{A}_t)]\]</div>
 </li>
 <li><p>The ratio function <span class="math notranslate nohighlight">\(\rightarrow r_t(\theta)\)</span></p>
 <div class="math notranslate nohighlight">
 \[r_t (\theta) = \frac{\pi_\theta (a_t | S_t)} {\pi_{\theta_{old}}(a_t | S_t)}\]</div>
-</li>
-</ul>
-<p>Its the probability of taking action <span class="math notranslate nohighlight">\(a_t\)</span> at state <span class="math notranslate nohighlight">\(S_t\)</span> in current policy divided by same for previous policy</p>
+<p>the ratio of probability of taking action <span class="math notranslate nohighlight">\(a_t\)</span> at <span class="math notranslate nohighlight">\(S_t\)</span> in current policy  to same for previous policy</p>
 <ul class="simple">
 <li><p>if <span class="math notranslate nohighlight">\(r_t(\theta) &gt; 1\)</span>, the action <span class="math notranslate nohighlight">\(a_t\)</span> at state <span class="math notranslate nohighlight">\(S_t\)</span> is more likely in the current policy than the old policy</p></li>
 <li><p>If <span class="math notranslate nohighlight">\(r_t (\theta)\)</span> is between 0 and 1, the action is less likely for current policy than for the old one</p></li>
 </ul>
-<p>So, this probabilty ratio is an easy way to estimate the divergence between old and current policy</p>
+<p>This probabilty ratio is an easy way to estimate the divergence between old and current policy</p>
+</li>
+</ul>
 </section>
 <section id="the-unclipped-part-of-surrogate-objective-function">
 <h2>The unclipped part of Surrogate objective function<a class="headerlink" href="#the-unclipped-part-of-surrogate-objective-function" title="Link to this heading"></a></h2>
-<p><span class="math notranslate nohighlight">\(= r_t (\theta) \hat{A_t}\)</span></p>
-<p>the ratio can replace the log probability we use in policy objective function</p>
-<ul class="simple">
+<p><span class="math notranslate nohighlight">\(r_t (\theta) \hat{A_t} \rightarrow\)</span>  the ratio can replace the log probability we use in policy objective function</p>
+<ul>
+<li><p>While implementing, to calculate ratio, we use</p>
+<p><span class="math notranslate nohighlight">\(z = log(r_t(\theta)) = log(\frac{\pi_\theta (a | S)} {\pi_{\theta_{old}}(a | S)}) = log(\pi_\theta(a|S)) - log(\pi_{\theta_{old}}(a|S)) \)</span></p>
+<p>Since we get log_prob from torch.categorical in pytorch</p>
+<p><span class="math notranslate nohighlight">\(e^{z}\)</span> gives the ratio <span class="math notranslate nohighlight">\(r_t (\theta)\)</span> that we need</p>
+</li>
 <li><p>However, if the action taken is much more probable in our current policy than in our former, this would lead to significant policy gradient step and hence an excessive policy update</p></li>
 </ul>
 </section>
@@ -304,7 +325,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="08_actor_critic.html" class="btn btn-neutral float-left" title="Actor-Critic Method - A2C" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="10_multi_agent.html" class="btn btn-neutral float-right" title="Intro to Multi-agent and AI vs AI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="110_qlearn.html" class="btn btn-neutral float-right" title="QLearning in Pytorch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

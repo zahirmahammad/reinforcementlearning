@@ -1,28 +1,33 @@
 # PPO - Proximal Policy Optimization
 
-Proximal Policy Optimization: An architecture that improces our agent's training stability by avoiding policy updates that are too large
+**Key Idea:**  Modified architecture that improves our agent's training stability by avoiding policy updates that are too large
 
-To do that, we use a ratio that indicates the difference between our current and old policy and clip this ratio to a specific range [$1-\epsilon$, $1+\epsilon$]
+- We use a ratio that indicates the difference between our current and old policy and clip this ratio to a specific range [$1-\epsilon$, $1+\epsilon$]
+
+- The ratio function $\rightarrow r_t(\theta)$
+
+    $$r_t (\theta) = \frac{\pi_\theta (a_t | S_t)} {\pi_{\theta_{old}}(a_t | S_t)}$$
 
 This will ensure that our policy update will not be too large and that the training is more stable
 
-## The intuition behind PPO
+## The Intuition
 
-The idea with PPO is we want to improve the training stability of policy by limiting the change you make to the policy at each training epoch
+Improve the training stability of policy - by limiting the change you make to the policy at each training epoch
 
-## Two Reasons:
-- We know empirically that smaller policy updates during training are more likely to coverge at an optimal solution
-- A too-big step in a policy update can result in falling. "off the clif" (getting a bad policy) and taking a long time or even having no probability to recover
+## Why this Approach:
+1. We know empirically - smaller policy updates during training are more likely to converge at an optimal solution
+2. A too-big step in a policy update can result in falling "off the cliff" (getting a bad policy) and taking a long time or even having no probability to recover
 
 --- off the cliff image ---
 
 
 We update conservatively
-- HOw much current policy chnage compared to the former one using a ratio calculation between the current and former policy and we clip this ratio in a range [$1-\epsilon$, $1+\epsilon$], we remove the incentive for the current policy to go too far from old one
+- How much current policy change compared to the former one using a ratio calculation between the current and former policy and we clip this ratio in a range [$1-\epsilon$, $1+\epsilon$] (we remove the incentive for the current policy to go too far from old one)
 
-## Clipped Surrogate Objective Function
+## The Objective Function
+(We call it "Clipped Surrogate Objective Function")
 
-- The policy objective function
+- The policy objective function that we know
 
     $$L^{PG}(\theta) = E_t[log \pi_\theta (a_t | S_t) . A_t]$$
 
@@ -33,8 +38,8 @@ We update conservatively
 - However, the problem comes from step size
   - too small, training process goes too slow
   - too high, there will be too much of variability in training
-- In PPO, we constrain our policy update with a objective function called "Clipped Surrogate Objective Function" - that will constrain the policy change in a small range using a clip
-- This function is designed to avoid destructively large weights update
+- We constrain our policy update with a objective function called "Clipped Surrogate Objective Function" - that will constrain the policy change in a small range using a clip
+- This new objective function in PPO - to avoid destructively large weights update
 
     $$L^{clip}(\theta) = \hat{E}_t[min(r_t (\theta) \hat{A}_t, clip(r_t (\theta), 1-\epsilon, 1+\epsilon) \hat{A}_t)]$$
 
@@ -42,18 +47,24 @@ We update conservatively
 
     $$r_t (\theta) = \frac{\pi_\theta (a_t | S_t)} {\pi_{\theta_{old}}(a_t | S_t)}$$
 
-Its the probability of taking action $a_t$ at state $S_t$ in current policy divided by same for previous policy
+  the ratio of probability of taking action $a_t$ at $S_t$ in current policy  to same for previous policy
 
-- if $r_t(\theta) > 1$, the action $a_t$ at state $S_t$ is more likely in the current policy than the old policy
-- If $r_t (\theta)$ is between 0 and 1, the action is less likely for current policy than for the old one
+  - if $r_t(\theta) > 1$, the action $a_t$ at state $S_t$ is more likely in the current policy than the old policy
+  - If $r_t (\theta)$ is between 0 and 1, the action is less likely for current policy than for the old one
   
-So, this probabilty ratio is an easy way to estimate the divergence between old and current policy
+  This probabilty ratio is an easy way to estimate the divergence between old and current policy
 
 ## The unclipped part of Surrogate objective function
 
-$= r_t (\theta) \hat{A_t}$
+$r_t (\theta) \hat{A_t} \rightarrow$  the ratio can replace the log probability we use in policy objective function
 
-the ratio can replace the log probability we use in policy objective function
+- While implementing, to calculate ratio, we use 
+
+  $z = log(r_t(\theta)) = log(\frac{\pi_\theta (a | S)} {\pi_{\theta_{old}}(a | S)}) = log(\pi_\theta(a|S)) - log(\pi_{\theta_{old}}(a|S)) $
+
+  Since we get log_prob from torch.categorical in pytorch
+
+  $e^{z}$ gives the ratio $r_t (\theta)$ that we need
 
 - However, if the action taken is much more probable in our current policy than in our former, this would lead to significant policy gradient step and hence an excessive policy update
 

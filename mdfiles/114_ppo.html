@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Q Learning &mdash; RLDocs 0.1 documentation</title>
+  <title>PPO in Pytorch &mdash; RLDocs 0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=fe9a56cb" />
@@ -18,13 +18,11 @@
       <script src="../_static/documentation_options.js?v=2709fde1"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
-      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="DQN" href="06_DQN.html" />
-    <link rel="prev" title="Policy-Based Methods" href="04_policy_based.html" /> 
+    <link rel="next" title="Intro to Multi-agent and AI vs AI" href="10_multi_agent.html" />
+    <link rel="prev" title="A2C in Pytorch" href="113_a2c.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -55,8 +53,8 @@
 <li class="toctree-l1"><a class="reference internal" href="04_policy_based.html">Policy-Based Methods</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Value-Based Algorithms</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Q Learning</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="05_QLearning.html">Q Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06_DQN.html">DQN</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Policy-Based Algorithms</span></p>
@@ -66,12 +64,12 @@
 <li class="toctree-l1"><a class="reference internal" href="09_PPO.html">PPO - Proximal Policy Optimization</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Implementation in PyTorch</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="110_qlearn.html">QLearning in Pytorch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="111_dqn.html">DQN in Pytorch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="112_reinforce.html">Reinforce in Pytorch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="113_a2c.html">A2C in Pytorch</a></li>
-<li class="toctree-l1"><a class="reference internal" href="114_ppo.html">PPO in Pytorch</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PPO in Pytorch</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
 <ul>
@@ -92,9 +90,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Q Learning</li>
+      <li class="breadcrumb-item active">PPO in Pytorch</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/mdfiles/05_QLearning.md.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/mdfiles/114_ppo.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -102,66 +100,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section class="tex2jax_ignore mathjax_ignore" id="q-learning">
-<h1>Q Learning<a class="headerlink" href="#q-learning" title="Link to this heading"></a></h1>
-<p>An Off-policy, value-based method that uses TD approach to train its action-value function</p>
-<p>Q-Learning = An algorithm to train Q-function - an action-value function</p>
-<p>– diagram —</p>
-<p>Q = Quality (the value) of that action at that state</p>
-<ul>
-<li><p>Internally, Q-function is encoded by Q-table, a table where each cell corresponds to a state-action pair</p>
-<p><span class="math notranslate nohighlight">\(\pi^*(s) = argmax_aQ^*(s, a)\)</span> — {epsilon-greedy policy}</p>
-</li>
-</ul>
-<p>– diagram –</p>
-<ul class="simple">
-<li><p>Optimal Q-table = Optimal Q-function = Optimal Policy</p></li>
-</ul>
-<section id="algorithm">
-<h2>Algorithm<a class="headerlink" href="#algorithm" title="Link to this heading"></a></h2>
-<ol class="arabic">
-<li><p>Initiate Q-table</p></li>
-<li><p>Choose an action based on <span class="math notranslate nohighlight">\(\epsilon\)</span>-greedy strategy {<span class="math notranslate nohighlight">\(\epsilon\)</span> = explore; 1-<span class="math notranslate nohighlight">\(\epsilon\)</span> = exploit}</p></li>
-<li><p>Perform <span class="math notranslate nohighlight">\(A_t\)</span>, get <span class="math notranslate nohighlight">\(R_{t+1}\)</span> &amp; <span class="math notranslate nohighlight">\(S_{t+1}\)</span></p></li>
-<li><p>Update <span class="math notranslate nohighlight">\(Q(S_t, A_t)\)</span> {TD learning}</p>
-<p><span class="math notranslate nohighlight">\(V(S_t) \leftarrow V(S_t) + \alpha[R_{t+1}+\gamma V(S_{t+1}) - V(S_t)]\)</span></p>
-<p><span class="math notranslate nohighlight">\(Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha[R_{t+1} + \gamma Q(S_{t+1}, a) - Q(S_t, A_t)]\)</span></p>
-</li>
-</ol>
-<p>The TD target =
-<span class="math notranslate nohighlight">\(R_{t+1} + \gamma Q(S_{t+1}, a)\)</span></p>
-<p><span class="math notranslate nohighlight">\(R_{t+1}\)</span> = Current Reward</p>
-<p><span class="math notranslate nohighlight">\(Q(S_{t+1}, a)\)</span> = Greedy policy to choose the highest Q-valued action of next state {not <span class="math notranslate nohighlight">\(\epsilon\)</span>-greedy policy}</p>
-<ul class="simple">
-<li><p>For updating we use <span class="math notranslate nohighlight">\(\rightarrow\)</span> Greedy policy</p></li>
-<li><p>For New state <span class="math notranslate nohighlight">\(\rightarrow\)</span> <span class="math notranslate nohighlight">\(\epsilon\)</span>-greedy policy</p></li>
-</ul>
-<p>That’s why “Off-policy”</p>
-</section>
-<section id="off-policy-vs-on-policy">
-<h2>Off-Policy Vs On-Policy<a class="headerlink" href="#off-policy-vs-on-policy" title="Link to this heading"></a></h2>
-<ul>
-<li><p>Off-Policy - uses different policy for acting(inference) and updating(training)</p>
-<ul class="simple">
-<li><p>In Q-learning <span class="math notranslate nohighlight">\(\rightarrow\)</span> <span class="math notranslate nohighlight">\(\epsilon\)</span>-greedy {acting policy} ; greedy policy {updating policy}</p></li>
-</ul>
-</li>
-<li><p>On-Policy - uses same policy for acting and updating</p>
-<ul class="simple">
-<li><p>Eg - Sarsa, another value-based algo. uses <span class="math notranslate nohighlight">\(\epsilon\)</span>-greedy to select next state-action pair</p></li>
-</ul>
-<p><span class="math notranslate nohighlight">\(Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha [R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t)]\)</span></p>
-</li>
-</ul>
-</section>
+  <section class="tex2jax_ignore mathjax_ignore" id="ppo-in-pytorch">
+<h1>PPO in Pytorch<a class="headerlink" href="#ppo-in-pytorch" title="Link to this heading"></a></h1>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="04_policy_based.html" class="btn btn-neutral float-left" title="Policy-Based Methods" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="06_DQN.html" class="btn btn-neutral float-right" title="DQN" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="113_a2c.html" class="btn btn-neutral float-left" title="A2C in Pytorch" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="10_multi_agent.html" class="btn btn-neutral float-right" title="Intro to Multi-agent and AI vs AI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
