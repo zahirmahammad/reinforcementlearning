@@ -60,11 +60,14 @@ $r_t (\theta) \hat{A_t} \rightarrow$  the ratio can replace the log probability 
 
 - While implementing, to calculate ratio, we use 
 
-  $z = log(r_t(\theta)) = log(\frac{\pi_\theta (a | S)} {\pi_{\theta_{old}}(a | S)}) = log(\pi_\theta(a|S)) - log(\pi_{\theta_{old}}(a|S)) $
+  $z = log(r_t(\theta)) = log(\frac{\pi_\theta (a | S)} {\pi_{\theta_{old}}(a | S)}) = log(\pi_\theta(a|S)) - log(\pi_{\theta_{old}}(a|S))$
 
   Since we get log_prob from torch.categorical in pytorch
 
   $e^{z}$ gives the ratio $r_t (\theta)$ that we need
+
+- Note: when you have contin action_space where the action returned not a 1D one but 3D or 4D one, then you multiply the prob of all action which inturn is the addition of log_probs to get the final log_prob required for the objective/loss/gradient function. Its about:
+  - “How likely is this entire action vector?” - thats why we add the log
 
 - However, if the action taken is much more probable in our current policy than in our former, this would lead to significant policy gradient step and hence an excessive policy update
 
