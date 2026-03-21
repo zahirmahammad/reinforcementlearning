@@ -170,9 +170,14 @@
 <p><span class="math notranslate nohighlight">\(r_t (\theta) \hat{A_t} \rightarrow\)</span>  the ratio can replace the log probability we use in policy objective function</p>
 <ul>
 <li><p>While implementing, to calculate ratio, we use</p>
-<p><span class="math notranslate nohighlight">\(z = log(r_t(\theta)) = log(\frac{\pi_\theta (a | S)} {\pi_{\theta_{old}}(a | S)}) = log(\pi_\theta(a|S)) - log(\pi_{\theta_{old}}(a|S)) \)</span></p>
+<p><span class="math notranslate nohighlight">\(z = log(r_t(\theta)) = log(\frac{\pi_\theta (a | S)} {\pi_{\theta_{old}}(a | S)}) = log(\pi_\theta(a|S)) - log(\pi_{\theta_{old}}(a|S))\)</span></p>
 <p>Since we get log_prob from torch.categorical in pytorch</p>
 <p><span class="math notranslate nohighlight">\(e^{z}\)</span> gives the ratio <span class="math notranslate nohighlight">\(r_t (\theta)\)</span> that we need</p>
+</li>
+<li><p>Note: when you have contin action_space where the action returned not a 1D one but 3D or 4D one, then you multiply the prob of all action which inturn is the addition of log_probs to get the final log_prob required for the objective/loss/gradient function. Its about:</p>
+<ul class="simple">
+<li><p>“How likely is this entire action vector?” - thats why we add the log</p></li>
+</ul>
 </li>
 <li><p>However, if the action taken is much more probable in our current policy than in our former, this would lead to significant policy gradient step and hence an excessive policy update</p></li>
 </ul>
