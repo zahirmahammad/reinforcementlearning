@@ -1,0 +1,47 @@
+/* Outer content background */
+.wy-nav-content-wrap {
+    background: #202020;
+}
+
+/* Main content container */
+.wy-nav-content {
+    background: #202020;
+}
+
+/* Inner page content */
+.rst-content {
+    background: #202020;
+    color: #e6e6e6;
+}
+
+/* Headings + text */
+.rst-content h1,
+.rst-content h2,
+.rst-content h3,
+.rst-content h4,
+.rst-content h5,
+.rst-content h6,
+.rst-content p,
+.rst-content li {
+    color: #e6e6e6;
+}
+
+/* Links (Notion-ish blue) */
+.rst-content a {
+    color: #4ea1ff;
+}
+
+/* Optional: subtle separators */
+.rst-content hr {
+    border-color: #333;
+}
+
+/* Sidebar background (the dark area under the blue header) */
+.wy-nav-side {
+    background: #202020;
+}
+
+/* Scrollable sidebar content */
+.wy-side-scroll {
+    background: #202020;
+}
