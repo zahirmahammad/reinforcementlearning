@@ -42,20 +42,20 @@ while explaining concepts clearly
    mdfiles/09_PPO
 
 
-.. toctree::
-   :maxdepth: 1
-   :titlesonly:
-   :caption: Implementation in PyTorch
+.. .. toctree::
+..    :maxdepth: 1
+..    :titlesonly:
+..    :caption: Implementation in PyTorch
 
-   mdfiles/110_qlearn
-   mdfiles/111_dqn
-   mdfiles/112_reinforce
-   mdfiles/113_a2c
-   mdfiles/114_ppo
+..    mdfiles/110_qlearn
+..    mdfiles/111_dqn
+..    mdfiles/112_reinforce
+..    mdfiles/113_a2c
+..    mdfiles/114_ppo
 
-.. toctree::
-   :maxdepth: 1
-   :titlesonly:
-   :caption: Miscellaneous
+.. .. toctree::
+..    :maxdepth: 1
+..    :titlesonly:
+..    :caption: Miscellaneous
 
-   mdfiles/10_multi_agent
+..    mdfiles/10_multi_agent

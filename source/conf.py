@@ -18,6 +18,8 @@ release = '0.1'
 extensions = [
     "myst_parser",
     "sphinx.ext.mathjax",
+    # "sphinx_rtd_dark_mode",
+
 ]
 
 myst_enable_extensions = [
@@ -42,6 +44,7 @@ exclude_patterns = []
 # html_theme = 'alabaster'
 html_theme = "sphinx_rtd_theme"
 # html_theme = "sphinx_book_theme"
+# html_theme = "sphinx_rtd_dark_mode"
 html_static_path = ['_static']
 html_theme_options = {
     "logo_only": True,  # Only show logo (optional: shows logo instead of title in header)
@@ -59,4 +62,7 @@ html_theme_options = {
     "sticky_navigation": True,     # optional: keep sidebar visible on scroll
     "navigation_depth": 1,         # show only top-level pages in sidebar
 }
+
+# def setup(app):
+#     app.add_css_file('dark.css')
 # -----------------
